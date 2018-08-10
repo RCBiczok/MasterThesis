@@ -243,3 +243,6 @@ TSWLatexianTemp*
 
 # IDE files
 .vscode
+.Rproj.user
+*.RProj
+*.Rhistory
