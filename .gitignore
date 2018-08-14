@@ -246,3 +246,6 @@ TSWLatexianTemp*
 .Rproj.user
 *.RProj
 *.Rhistory
+
+# Other build intermediates
+__hidden

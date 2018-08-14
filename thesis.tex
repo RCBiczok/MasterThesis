@@ -1,0 +1,199 @@
+\documentclass{thesisclass}
+% Based on thesisclass.cls of Timo Rohrberg, 2009
+% ----------------------------------------------------------------
+% Thesis - Main document
+% ----------------------------------------------------------------
+
+\usepackage{caption}
+\usepackage{blkarray}
+\usepackage{framed}
+\usepackage[linesnumbered,ruled]{algorithm2e}
+\usepackage{multicol}
+
+%% ---------------------------------
+%% | Information about the thesis  |
+%% ---------------------------------
+
+\newcommand{\myname}{Rudolf Biczok}
+\newcommand{\mytitle}{Integration of internal and external gene expression and drug-perturbation data to empower novel immune therapies against Parkinson’s Disease}
+\newcommand{\myinstitute}{Institute of Theoretical Computer Science}
+
+\newcommand{\reviewerone}{Prof. Dr. Alexandros Stamatakis}
+\newcommand{\reviewertwo}{Prof. Dr. Ralf Reussner}
+\newcommand{\advisor}{Dr. Alexey Kozlov}
+
+\newcommand{\timestart}{1st August 2018}
+\newcommand{\timeend}{31st January 2019}
+
+%% -------------------------------
+%% |  Information for PDF file   |
+%% -------------------------------
+
+\hypersetup{
+	pdfauthor={\myname},
+	pdftitle={\mytitle},
+	pdfsubject={Bioinformatics},
+	pdfkeywords={Drug Discovery, Bioinformatics, Data Mining}
+}
+
+%% ---------------------------------
+%% | Commands                      |
+%% ---------------------------------
+
+\newtheorem{definition}{Definition} \numberwithin{definition}{chapter}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{conjecture}[definition]{Conjecture}
+
+
+%% --------------------------------
+%% | Settings for word separation |
+%% --------------------------------
+% Help for separation:
+% In german package the following hints are additionally available:
+% "- = Additional separation
+% "| = Suppress ligation and possible separation (e.g. Schaf"|fell)
+% "~ = Hyphenation without separation (e.g. bergauf und "~ab)
+% "= = Hyphenation with separation before and after
+% "" = Separation without a hyphenation (e.g. und/""oder)
+
+% Describe separation hints here:
+\hyphenation{
+% Pro-to-koll-in-stan-zen
+% Ma-na-ge-ment  Netz-werk-ele-men-ten
+% Netz-werk Netz-werk-re-ser-vie-rung
+% Netz-werk-adap-ter Fein-ju-stier-ung
+% Da-ten-strom-spe-zi-fi-ka-tion Pa-ket-rumpf
+% Kon-troll-in-stanz
+}
+
+%Break links in URLs
+\def\UrlBreaks{\do\/\do-}
+
+
+%% ------------------------
+%% |    Including files   |
+%% ------------------------
+% Only files listed here will be included!
+% Userful command for partially translating the document (for bug-fixing e.g.)
+\includeonly{
+titlepage,
+chapters/introduction,
+chapters/sota,
+chapters/conclusion,
+chapters/appendix
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Here, main documents begins %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+% Remove the following line for German text
+\selectlanguage{english}
+
+\frontmatter
+\pagenumbering{roman}
+\include{titlepage}
+\blankpage
+
+%% -------------------------------
+%% |   Statement of Authorship   |
+%% -------------------------------
+
+\thispagestyle{plain}
+
+\vspace*{\fill}
+
+\centerline{\textbf Statement of Authorship}
+
+\vspace{0.25cm}
+
+I hereby declare that this document has been composed by myself and describes my own work, unless otherwise acknowledged in the text.
+
+\vspace{2.5cm}
+
+\hspace{0.25cm} Heidelberg, 31st January 2019
+
+\vspace{2cm}
+
+\blankpage
+
+%% -------------------
+%% |   Abstract      |
+%% -------------------
+
+\thispagestyle{plain}
+
+\begin{addmargin}{0.5cm}
+
+\centerline{\textbf Abstract}
+
+%A short summary of what is going on here.
+
+Bla bla
+
+\vskip 2cm
+
+\centerline{\textbf Deutsche Zusammenfassung}
+
+%Kurze Inhaltsangabe auf deutsch.
+
+Bla bla
+
+\vskip 2cm
+
+\newpage
+
+\centerline{\textbf Acknowledgements}
+
+Bla Bla
+
+\end{addmargin}
+
+\blankpage
+
+%% -------------------
+%% |   Directories   |
+%% -------------------
+
+\tableofcontents
+\blankpage
+
+%% -----------------
+%% |   Main part   |
+%% -----------------
+
+\mainmatter
+\pagenumbering{arabic}
+\include{chapters/introduction}
+\include{chapters/sota}
+%\include{TODO}
+\include{chapters/conclusion}
+
+%% --------------------
+%% |   Bibliography   |
+%% --------------------
+
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\bibname}
+
+\iflanguage{english}
+{\bibliographystyle{alpha}}
+{\bibliographystyle{babalpha-fl}} % german style
+
+\bibliography{references}
+
+
+%% ----------------
+%% |   Appendix   |
+%% ----------------
+
+\cleardoublepage
+\input{chapters/appendix}
+
+
+\end{document}

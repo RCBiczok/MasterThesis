@@ -1,0 +1,115 @@
+%% background.tex
+%%
+
+%% ==============================
+\chapter{State of the art}
+\label{ch:sota}
+%% ==============================
+
+\section{Gene Expression Analysis}
+
+The most recurring task in pharmaceutical research \& early development is the gene expression analysis on a given date source. 
+
+\subsection{Methods for differential gene expression inferrence}
+
+Name | Strategy | Prefered Input Data
+-----|------------|--------------------
+[edgeR](http://doi.org/10.1093/bioinformatics/btp616) | Negative binomial distribution + Trimmed Mean of M values (TMM) Normalization | RNAseq
+[DEseq](https://doi.org/10.1186/s13059-014-0550-8) | Negative binomial distribution + scaling factor normalization procedure | RNAseq
+[limma](https://doi.org/10.1093/nar/gkv007) | Linear Modeling + voom transformation of counts (vor RNAseq) | RNAseq \& microarray
+
+The "rule of thumb" is to use limma for microarray data and edgeR for RNAseq data. DEseq is used to verify that a hypothesis based on edgeR results can also be derived from DEseq results (since edgeR is known to report more false positives).
+
+\subsection{Methods for batch-effect correction in meta-analysis}
+
+We use ComBat, SVA, and BioQC. Here we will probably have to compare different methods and reach a conclusion.
+
+\subsection{Methods for gene-set/pathway enrichment analysis}
+
+We use CAMERA, BioQC, and Fisher's exact test.
+Previously we found out that CAMERA and BioQC will lead to false negatives when many genes are differentially expressed, while Fisher's exact test will not (not published). We can verify this and make a meta-method to accommodate different scenarios.
+
+\section{ROGER}
+
+\subsection{ROGER Database}
+
+* **Annotations**
+* Gene Annotation (consumes biomart)
+* GeneAnnotation: Ensemble \& NCBI gen IDs. ROGER-internal GeneIndex, Gen meta data
+* Orthologs: Mapping between orthologous genes between different species
+* TranscriptioAnnotation: Ensemble Transcription ID and meta data
+* TranscriptRefSeq: NCBI Transcription ID and meta data
+* Genesets (consumes mongodb/json \& gmt)
+* DefaultGenesets: Available gen set data
+* DefaultGenesetCategory: For gen set categorization
+* DefaultGenesets2gene: Mapping of gen set data to gen annotations
+* **Input**
+* Datasets: Raw expression data
+* Phenodata
+* Designs: Relevant Feature matrix
+* Contrasts: Contrast matrix
+* **Methods \& Results**
+* GSEmethods: Used Gen enrichment method (e.g. CAMERA)
+* GSEtables: Gen enrichment results
+* DGEmethods: Used Differential Gen Expression inference method (e.g.  edgeR, limma)
+* DGEmodels: Used DGE model based on Desing and Cntrast information
+* DGEtables: Results from DEG inference
+
+\subsection{Annotation Problems}
+
+* Have to support both Ensembl and NCBI IDs
+* Ensembl has many unconsistent / deprecated data: Some Gene Symbols apper in multiple EnsembleGeneIds, 
+* Possible fix: pick the "most accurate on" (e.g. does it have a proper chromosone? Number of Transcripts etc.)
+
+% ![ROGER Schema](roger/old_schema.png)
+
+\subsection{RESTful APIs for scientific R pipelines}
+
+* [rplumber](https://www.rplumber.io/)
+* Fastest way to deploy REST services
+* Very low-level: No load balancing, no authentication, task management, ...
+* [OpenCPU](https://www.opencpu.org)
+* Load balancing
+* Lightwing WEB API basedn on JavaScript
+* No build-in support for [long running jobs]
+(https://github.com/opencpu/opencpu/issues/141)
+* No build-in task management
+* [Flask](http://flask.pocoo.org)
+* Python equivalent to OpenCPU
+* Established in the department
+* Requires wapper functions between python <-> R
+* No build-in task management
+
+\section{Differential Gene Expression}
+
+\begin{multicols}{2}
+
+\[
+	\begin{blockarray}{cccc}
+		& \mu & \text{micro} & \text{mono} &  \\
+		\begin{block}{c(ccc)}
+			A & 1 & 0 & 0  \\
+			B & 1 & 0 & 0  \\
+			C & 1 & 1 & 0  \\
+			D & 1 & 1 & 0  \\
+			E & 1 & 0 & 1  \\
+		    F & 1 & 0 & 1  \\
+		\end{block}
+	\end{blockarray}
+\]
+
+\[
+	\begin{blockarray}{cccc}
+		& \text{macro} & \text{micro} & \text{mono} &  \\
+		\begin{block}{c(ccc)}
+			A & 1 & 0 & 0  \\
+			B & 1 & 0 & 0  \\
+			C & 0 & 1 & 0  \\
+			D & 0 & 1 & 0  \\
+			E & 0 & 0 & 1  \\
+			F & 0 & 0 & 1  \\
+		\end{block}
+	\end{blockarray}
+\]
+
+\end{multicols}
