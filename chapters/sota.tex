@@ -12,6 +12,8 @@ The most recurring task in pharmaceutical research \& early development is the g
 
 \subsection{Methods for differential gene expression inferrence}
 
+
+
 Name | Strategy | Prefered Input Data
 -----|------------|--------------------
 [edgeR](http://doi.org/10.1093/bioinformatics/btp616) | Negative binomial distribution + Trimmed Mean of M values (TMM) Normalization | RNAseq
@@ -82,34 +84,119 @@ Previously we found out that CAMERA and BioQC will lead to false negatives when 
 
 \section{Differential Gene Expression}
 
-\begin{multicols}{2}
+Lets assume we have a study consisting of a set of samples $D = \cbrac{A, B, C, D, E, F}$. Samples $A$ and $B$ are from macrophage cells, $C$ and $D$ are from microglia cells, and $E$ and $F$ are from monocyte cells. 
 
-\[
-	\begin{blockarray}{cccc}
-		& \mu & \text{micro} & \text{mono} &  \\
-		\begin{block}{c(ccc)}
-			A & 1 & 0 & 0  \\
-			B & 1 & 0 & 0  \\
-			C & 1 & 1 & 0  \\
-			D & 1 & 1 & 0  \\
-			E & 1 & 0 & 1  \\
-		    F & 1 & 0 & 1  \\
-		\end{block}
-	\end{blockarray}
-\]
+Then we have basically two ground ways to model the experiments:
 
-\[
-	\begin{blockarray}{cccc}
-		& \text{macro} & \text{micro} & \text{mono} &  \\
-		\begin{block}{c(ccc)}
-			A & 1 & 0 & 0  \\
-			B & 1 & 0 & 0  \\
-			C & 0 & 1 & 0  \\
-			D & 0 & 1 & 0  \\
-			E & 0 & 0 & 1  \\
-			F & 0 & 0 & 1  \\
-		\end{block}
-	\end{blockarray}
-\]
+\begin{lrbox}{\saveBoxOne}
+	\mintinline{R}{model.matrix(~CellType)} 
+\end{lrbox}
 
-\end{multicols}
+\begin{lrbox}{\saveBoxTwo}
+	\mintinline{R}{model.matrix(~0+CellType)}
+\end{lrbox}
+
+\begin{lrbox}{\saveBoxThree}
+\begin{minipage}{5cm}
+	\[
+		\begin{blockarray}{cccc}
+			& \mu & \text{\rotatebox{90}{micro}} & \text{\rotatebox{90}{mono}} &  \\
+			\begin{block}{c(ccc)}
+				A & 1 & 0 & 0  \\
+				B & 1 & 0 & 0  \\
+				C & 1 & 1 & 0  \\
+				D & 1 & 1 & 0  \\
+				E & 1 & 0 & 1  \\
+				F & 1 & 0 & 1  \\
+			\end{block}
+		\end{blockarray}
+	\]
+\end{minipage}
+\end{lrbox}
+
+\begin{lrbox}{\saveBoxFour}
+\begin{minipage}{5cm}
+	\[
+		\begin{blockarray}{cccc}
+			& \text{\rotatebox{90}{macro}} & \text{\rotatebox{90}{micro}} & \text{\rotatebox{90}{mono}} &  \\
+			\begin{block}{c(ccc)}
+				A & 1 & 0 & 0  \\
+				B & 1 & 0 & 0  \\
+				C & 0 & 1 & 0  \\
+				D & 0 & 1 & 0  \\
+				E & 0 & 0 & 1  \\
+				F & 0 & 0 & 1  \\
+			\end{block}
+		\end{blockarray}
+	\]
+\end{minipage}
+\end{lrbox}
+
+\begin{lrbox}{\saveBoxFive}
+	\begin{minipage}{5.3cm}
+		\[ y \thicksim \mu + \beta_{\text{micro}} x_{\text{micro}} + \beta_{\text{mono}} x_{\text{mono}}\] 
+	\end{minipage}
+\end{lrbox}
+
+\begin{lrbox}{\saveBoxSix}
+	\begin{minipage}{5.3cm}
+		\[ \begin{split}
+		y \thicksim \ & \beta_{\text{macro}} x_{\text{macro}} + \beta_{\text{micro}} x_{\text{micro}} \\
+		& \beta_{\text{mono}} x_{\text{mono}}
+		\end{split} \]
+	\end{minipage}
+\end{lrbox}
+
+\begin{lrbox}{\saveBoxSeven}
+			\begin{minipage}{5.3cm}
+				\[
+					\begin{blockarray}{ccc}
+						\begin{block}{c(cc)}
+						\mu          & 0 & 0 \\
+						\text{micro} & 1 & 0 \\
+						\text{mono}  & 0 & 1 \\
+						\end{block}
+					\end{blockarray}
+				\]
+		\end{minipage}
+\end{lrbox}
+
+\begin{lrbox}{\saveBoxEight}
+	\begin{minipage}{5.3cm}
+			\[
+			\begin{blockarray}{cccc}
+			\begin{block}{c(ccc)}
+			\text{macro} & -1 & -1 & 0\\
+			\text{micro} & 1 & 0 & -1 \\
+			\text{mono}  & 0 & 1 & 1 \\
+			\end{block}
+			\end{blockarray}
+			\]
+	\end{minipage}
+\end{lrbox}
+
+\begin{table}[ht]
+
+	\begin{tabularx}{\linewidth}{|lCC|}%
+		\arrayrulecolor{black}%
+		\hline
+	
+		\rowcolor{black} & \thc{1 vs Average} & \thc{1 vs 1} \\
+	
+		\circled{1} & \usebox{\saveBoxOne} & \usebox{\saveBoxTwo} \\
+		\hline%
+	
+		\circled{2} & \usebox{\saveBoxThree} & \usebox{\saveBoxFour} \\
+		
+		\circled{3} & \usebox{\saveBoxFive} 
+		& \usebox{\saveBoxSix}  \\
+
+		\circled{4} & \usebox{\saveBoxSeven} 
+		& \usebox{\saveBoxEight}  \\
+		\hline%
+		
+		\hline
+	\end{tabularx}
+
+	\caption{Overview of example experiments} \label{fig:example_experiments}
+\end{table}

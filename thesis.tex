@@ -9,6 +9,13 @@
 \usepackage{framed}
 \usepackage[linesnumbered,ruled]{algorithm2e}
 \usepackage{multicol}
+\usepackage{minted}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{environ}
+\usepackage{tabularx}
 
 %% ---------------------------------
 %% | Information about the thesis  |
@@ -46,6 +53,44 @@
 \newtheorem{corollary}[definition]{Corollary}
 \newtheorem{conjecture}[definition]{Conjecture}
 
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+%% TODO : Is this ever used?
+\NewEnviron{myTable}[4]{%
+	\vspace{5px}%
+	\centering%
+	\rowcolors{2}{black!25}{white}%
+	\captionsetup{type=table}
+	\begin{tabular}{|#2|}%
+		\arrayrulecolor{black}%
+		\hline%
+		\BODY
+		\hline%
+	\end{tabular}%
+	\vspace{-6px}%
+	\captionof{table}[#3]{#3#1} \label{#4}%
+	\vspace{5px}
+}
+
+\NewEnviron{centeredFigure}[1][]{%
+	\begin{figure}[#1]
+		\centering
+		\BODY
+	\end{figure}	
+}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+		\node[shape=circle,draw,inner sep=2pt, fill=black] (char) {\textcolor{white}{#1}};}}
+
+\newcommand{\thc}[1]{\textbf{\textcolor{white}{#1}}}
+
+\newcommand{\myHeaderCell}[1]{\cellcolor{black}\thc{#1}}
+
+\newcommand{\myMultiLineCell}[2][c]{%
+	\begin{tabular}{@{}#1@{}}#2\end{tabular}%
+}
+
+\newcommand{\cbrac}[1]{\lbrace #1\rbrace}
 
 %% --------------------------------
 %% | Settings for word separation |
@@ -90,6 +135,16 @@ chapters/appendix
 %% Here, main documents begins %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
+
+% Add common save boxes
+\newsavebox{\saveBoxOne}
+\newsavebox{\saveBoxTwo}
+\newsavebox{\saveBoxThree}
+\newsavebox{\saveBoxFour}
+\newsavebox{\saveBoxFive}
+\newsavebox{\saveBoxSix}
+\newsavebox{\saveBoxSeven}
+\newsavebox{\saveBoxEight}
 
 % Remove the following line for German text
 \selectlanguage{english}

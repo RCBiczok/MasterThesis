@@ -30,7 +30,7 @@
 \RequirePackage[protrusion=true,expansion=true]{microtype}
 % \usepackage{ae}               % Almost european, virtual T1-Font
 % Activate color definitions.
-\RequirePackage[pdftex]{xcolor}
+\RequirePackage[table,xcdraw,pdftex]{xcolor}
 % Make including other pdfs available.
 \RequirePackage[pdftex]{graphicx}
 % Additional math symbols.
@@ -51,17 +51,17 @@
 \RequirePackage[english,ngerman]{babel}
 \RequirePackage[ruled, vlined, linesnumbered]{algorithm2e}
 \RequirePackage[raiselinks=true,
-						    bookmarks=true,
-						    bookmarksopenlevel=1,
-					    	bookmarksopen=true,
-			    			bookmarksnumbered=true,
-			    			hyperindex=true,
-			    			plainpages=false,
-	    					pdfpagelabels=true,
-	    					pdfborder={0 0 0.5},
-		    				colorlinks=false,						
-	    					linkbordercolor={0 0.61 0.50},   
-		    				citebordercolor={0 0.61 0.50}]{hyperref}  %{0.57 0.74 0.57}
+				bookmarks=true,
+				bookmarksopenlevel=1,
+				bookmarksopen=true,
+			    bookmarksnumbered=true,
+			    hyperindex=true,
+			    plainpages=false,
+	    		pdfpagelabels=true,
+	    		pdfborder={0 0 0.5},
+		    	colorlinks=false,						
+	    		linkbordercolor={0 0.61 0.50},   
+		    	citebordercolor={0 0.61 0.50}]{hyperref}  %{0.57 0.74 0.57}
 						
 \RequirePackage[fixlanguage]{babelbib}	% sets german style for literature entries
 \selectbiblanguage{ngerman}		% for \bibliographystyle{babalpha}
