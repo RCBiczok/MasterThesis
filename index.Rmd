@@ -1,0 +1,13 @@
+--- 
+title: "Integration of internal and external gene expression and drug-perturbation data to empower novel immune therapies against Parkinson’s Disease"
+author: "Rudolf biczok"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [references.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+description: "Master Thesis"
+---
