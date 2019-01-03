@@ -59,7 +59,7 @@ acs-*.bib
 
 # changes
 *.soc
-
+	
 # cprotect
 *.cpt
 
@@ -248,4 +248,5 @@ TSWLatexianTemp*
 *.Rhistory
 
 # Other build intermediates
-__hidden
+__data
+.DS_Store

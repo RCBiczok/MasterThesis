@@ -1,4 +1,0 @@
-# Introduction {#intro}
-
-You can label chapter and section titles using `{#label}` after them, e.g., we can reference Chapter \@ref(sota).
-
