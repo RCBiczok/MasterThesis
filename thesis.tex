@@ -8,16 +8,21 @@
 \usepackage{blkarray}
 \usepackage{framed}
 \usepackage[linesnumbered,ruled]{algorithm2e}
+\usepackage{graphbox}
 \usepackage{multicol}
 \usepackage{minted}
 \usepackage{multicol}
+\usepackage{colortbl}
 \usepackage{wrapfig}
+\usepackage{hyperref}
+\usepackage{cleveref}
 \usepackage{todonotes}
 \usepackage{multirow}
 \usepackage{multirow}
 \usepackage{booktabs}
 \usepackage{environ}
 \usepackage{tabularx}
+\usepackage{tikz}
 \usepackage[acronym,nomain]{glossaries}
 
 %% ---------------------------------
@@ -82,8 +87,17 @@
 	\end{figure}	
 }
 
-\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
-		\node[shape=circle,draw,inner sep=2pt, fill=black] (char) {\textcolor{white}{#1}};}}
+\newcommand*\tikzCircled[1]{
+	\node[shape=circle,draw,inner sep=2pt, fill=black] (char) {
+		\textcolor{white}{#1}
+	}
+}
+
+\newcommand*\circled[1]{
+	\tikz[baseline=(char.base)]{
+		\tikzCircled{#1};
+	}
+}
 
 \newcommand{\thc}[1]{\textbf{\textcolor{white}{#1}}}
 
@@ -138,20 +152,19 @@ chapters/appendix
 % Generate the glossary
 \makeglossaries
 
+\makeatletter
+\renewcommand\listoffigures{%
+	\@starttoc{lof}%
+}
+\renewcommand\listoftables{%
+	\@starttoc{lot}%
+}
+\makeatother
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Here, main documents begins %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
-
-% Add common save boxes
-\newsavebox{\saveBoxOne}
-\newsavebox{\saveBoxTwo}
-\newsavebox{\saveBoxThree}
-\newsavebox{\saveBoxFour}
-\newsavebox{\saveBoxFive}
-\newsavebox{\saveBoxSix}
-\newsavebox{\saveBoxSeven}
-\newsavebox{\saveBoxEight}
 
 % Remove the following line for German text
 \selectlanguage{english}
@@ -193,7 +206,7 @@ I hereby declare that this document has been composed by myself and describes my
 
 \centerline{\textbf Abstract}
 
-The primary objective of gene set enrichment analysis is to annotate a genes of interest with a-priory knowledge in the form of curated gene sets. The problem in this method lies in the large number of reported gene sets and their varying information content. Previous publications suggest to use unsupervised learning methods like hierarchical clustering or self-organized maps to increase interpretability, but there is no metric to assess the quality of these clustering methods or the difference between gene set itself. We therefore evaluated statistical methods (minkowski, jaccard, kappa-statistic), network-based methods (shortest path in protein-protein networks), and method based on natural language processing for their capability to measure a biologically plausible distance between gene sets. We used pathway trees from Reactome and a curated tree of immune cell types with corresponding gene sets to compare these distance methods.  \todo{TODO what is the conclusion?}
+The primary objective of gene set enrichment analysis is to annotate genes of interest with a-priory knowledge in the form of curated gene sets. The problem in this method lies in the large number of reported gene sets and their varying information content. Previous publications suggest to use unsupervised learning methods like hierarchical clustering or self-organized maps to increase interpretability, but there is no metric to assess the quality of these clustering methods or the difference between gene sets itself. We therefore evaluated statistical methods (minkowski, jaccard, kappa-statistic), tree-based methods (gene ontology), network-based methods (shortest path in protein-protein networks), and method based on natural language processing for their capability to measure a biologically plausible distance between gene sets. We used pathway trees from Reactome and a curated tree of immune cell types with corresponding gene sets to benchmark these distance methods.  \todo{TODO what is the conclusion?}
 
 \vskip 2cm
 
@@ -209,7 +222,7 @@ The primary objective of gene set enrichment analysis is to annotate a genes of 
 
 \centerline{\textbf Acknowledgements}
 
-First and foremost I want to thank the two most valuable point of information Prof Dr. Alexandros Stamatakis and Dr. Jitao David Zhang. The open minded nature of Prof. Stamatakis made this research collaboration possible and his leading expertise in computational bioinformatics tremendously helped us to keep this master thesis in a academic format. Dr. Zhang also proved his courage and passion in academia by entrusting a theoretical biology research project to an computer science student. His knowledge as principle bioinformatician / biostatistician in an industrial and academic research environment complemented the methodical / computer science expertise of Stamatakis and me beyond expectations.
+First and foremost I want to thank the two most valuable point of information Prof Dr. Alexandros Stamatakis and Dr. Jitao David Zhang. The open minded nature of Prof. Stamatakis made this research collaboration possible and his leading expertise in computational bioinformatics tremendously helped us to keep this master thesis in an academic format. Dr. Zhang also proved his courage and passion in academia by entrusting a theoretical biology research project to an computer science student. His knowledge as principle bioinformatician / biostatistician in an industrial and academic research environment complemented the methodical / computer science expertise of Stamatakis and me beyond expectations.
 
 I send my greetings and thankfulness to Prof. Dr. Ralf H. Reussner, who did not hesitate to take the responsibility as second reviewer. I was a former participant in a two-term research project under the supervision of Prof. Reussner where he demonstrated a high level of methodical knowledge in the engineering aspect of computer science. 
 
@@ -259,23 +272,32 @@ The common procedure to research these questions is to conduct wet lab experimen
 Gene expression is the fundamental biological process of every organism that describes the transcription of \acrfull{rna} from \acrfull{dna} and the translation from \acrshort{rna} to proteins~\cite{citeulike:691434}. 
 Collecting and analyzing the gene expression level of every gene inside an organism allows us to identify differentially expressed genes that cause morphological differences between cell groups or cell types~\cite{doi:10.1093/bioinformatics/btp616}. To the end, bioinformaticians use public databases of gene sets to see which known cell components or biological processes are reflected by the previously inferred list of differential expressed genes. 
 Every gene set represents discovered knowledge in form of name, description and involved genes of a particular biological process. 
-Ideally, the entire procedure results in a list of gene sets that uniquely explain the effects of the original wet lab experiment~\cite{doi:10.1093/nar/gks461} (see \autoref{sec:gene_expression} for further information about gene expression analysis).
+Ideally, the entire procedure results in a list of gene sets that uniquely explain the effects of the original wet lab experiment~\cite{doi:10.1093/nar/gks461} (see \cref{sec:gene_expression} for further information about gene expression analysis).
 
 In reality, however, the information gain from reported gene sets is unsatisfying, because 
 1) gene sets from even the same database source tend to have a high gene overlap, 
 2) gene sets from publicly available databases can have many genes (>200), and 
 3) gene set information like title and description can vary in quality depending on the source.
-Existing literature suggest supervised clustering methods to organize gene sets into a more representative structure.  DAVID clustering, for instance, performs agglomerative clustering over pairwise kappa statistic between gene sets~\cite{Huang2007}. The authors of this algorithm claim that it maximizes the number of pairwise \acrfull{ppi} within each gene set cluster. They also, however, state that it is unclear if this optimization criterion is biologically justified. In general, there exist no gold standard to asses the biological similarity between two gene sets. Having such a gold standard for comparing gene sets on the other hand would make it possible to compare or even refine different clustering algorithm.
+Existing literature suggest supervised learning methods to organize gene sets into a more representative structure. The DAVID algorithm, for instance, performs agglomerative clustering over pairwise kappa statistic between gene sets~\cite{Huang2007}. The authors of this algorithm claim that it maximizes the number of pairwise \acrfull{ppi} within each gene set cluster. However, they also state that it is unclear if this optimization criterion is biologically justified. In general, there exist no gold standard to asses the biological similarity between two gene sets. Having such a gold standard the other hand would make it possible to compare gene set as elements of a metric space. It would enable researchers to benchmark and refine clustering algorithms or to discover new insights from the rapidly growing amount of gene set data.
 
 \section{Own contribution}
 
-We present in this thesis a systematic evaluation of different categories of distance metrics for gene sets. We implemented metrics based on 1) statistic methods, 2) gene ontology trees, 3) protein-protein interaction networks, and 4) natural language processing methods. For comparing the performance of each distance implementation, we extracted gene sets from data sources whose relationships are already know and preserved as rooted trees. These data sources include X\todo{update to newest} subsets of the Reactome pathway database~\cite{doi:10.1093/nar/gki072} and a manually curated collection of marker genes for human immune cell types. We bundled all distances, data preprocessing and analysis scripts into a automated work flow that can be readily extended or included into other algorithms.
+We present in this thesis a systematic evaluation of different distance metrics for pairwise gene set comparisons. We implemented metrics based on 1) statistic methods, 2) gene ontology trees, 3) protein-protein interaction graph networks, and 4) natural language processing methods. For comparing the performance of each distance implementation, we extracted gene sets from data sources whose relationships are already know and preserved as rooted trees. These data sources include 2\todo{update to newest} subsets of the Reactome pathway database~\cite{doi:10.1093/nar/gki072} and a manually curated collection of marker genes for 36\todo{update to newest} human immune cell types~\cite{Sturm463828}. We bundled all distances implementations, data preprocessing, and analysis scripts into a Python package that can be readily extended or included into other algorithms.
 
-Besides gene set analysis, we also spend a significant amount of time building a client-server application with a web-based front-end for executing and storing gene expression analysis experiments. \todo{Ref}.
+Besides gene set analysis, we also spend a significant amount of time building a gen expression analysis framework based on Python. It utilizes a client-server architecture with3 different front-ends for executing and persisting new gene expression experiments (see \cref{sec:roger} for more information).
+
+\section{Structure of this thesis}
+
+The reminder of this document follows the structure of a conventional bioinformatics paper. In \cref{ch:introduction}, we will explain the anatomy of a gene expression analysis pipeline in greater details. In addition, the introduction chapter will cover basic concepts about natural language processing with Word2Vec models and the composition about biological data sources (e.g. gene ontologies, \acrshort{ppi} networks).
+
+\Cref{ch:methods} gives more details about the algorithms behind each implemented distance metric. We will also summarize the preprocessing steps for the used evaluation data in this chapter.
+
+In \cref{ch:results}, present benchmark results from each distance metric over the different sets of evaluation date. We will also discuss certain outcome of the results and assess the limitations of different distance metrics. \todo{Mention the key points here}
+
+And finally, we will draw a final conclusion about our conducted experiments and we will give a future outlook about potential follow-up research in \cref{ch:results}.
 
 %% ==============================
-\chapter{Introduction}
-\label{ch:introduction}
+\chapter{Introduction}  \label{ch:introduction}
 %% ==============================
 
 %A reader of the introduction should be able to answer the following questions, although not in any depth.
@@ -300,24 +322,168 @@ Besides gene set analysis, we also spend a significant amount of time building a
 %--------------------------------
 %
 
-\section{Gene Expression Analysis} \label{sec:gene_expression}
+\section{Gene expression analysis} \label{sec:gene_expression}
 
-\subsection{Gene set enrichment}
+\newacronym{rnaseq}{RNA-Seq}{RNA sequencing}
+\newacronym{scrnaseq}{scRNA-Seq}{signle cell RNA sequencing}
+\newacronym{dge}{DGE}{Differential gene expression}
+\newacronym{gse}{GSE}{Gene set enrichment}
 
-Even with the list of significant genes from a gene expression analysis, it is hard to impossible identifying the exact biological event that is the causal reason for the expression of these genes. The reason for this is the share amount of genes in higher species (e.g. homo sapiens has ~24,000 coding genes) whose actual functions is either unknown or highly ambiqous.
+Gene set enrichment is the bread and butter of every bioinformatician who tries to discover the genetic reason for morphological differences between cell lines. The basic process involves a series of wet and dry lab operations (\cref{fig:gene_expression_analysiss}).
 
-First, a biologist conducts experiments on prepared cell lines and then extracts RNA from these cells. 
-Second, a bioinformatician utilize gene expression analysis pipelines to detect a list of  statistically significant gens within expression profiles. Finally, bioinformaticians use public databases of gene sets to see which cell components or biological processes are reflected by the previously inferred list of significant genes. 
+\begin{centeredFigure}[!h]
+	\resizebox{\textwidth}{!}{% <------ Don't forget this %
+		\begin{tikzpicture}
+			\node[inner sep=0pt] (monocyte1) at (0,0) {
+				S1 \enspace \includegraphics[align=c, width=1.1cm]{figures/introduction/macrophage.png}
+			};
+			\node[inner sep=0pt] (monocyte2) at (0,-1) {
+				S2 \enspace \includegraphics[align=c, width=1.1cm]{figures/introduction/macrophage.png}
+			};
+			\node[inner sep=0pt] (macrophage1) at (0,-2) {
+				S3 \enspace \includegraphics[align=c, width=1.1cm]{figures/introduction/microglia.png} 
+			};
+			\node[inner sep=0pt] (macrophage2) at (0,-3) {
+				S4 \enspace \includegraphics[align=c, width=1.1cm]{figures/introduction/microglia.png} 
+			};
+		
+			\node[align=center] (gct) at (6,-1.6) {
+				\textbf{Expression data} \\[3pt]
+				\setlength\tabcolsep{3pt}
+				\begin{tabular}{r|c|c|c|c}
+				   	        &    S1  &      S2 & S3 & S4  \\
+						\hline
+					Sensor 1 &    240 &    415 & 78 & 81 \\
+					Sensor 2 &      12 &       4 & 55  & 3  \\
+					Sensor 3 &       0 &        0 &        0 &        0  \\
+				  	\ldots & \ldots & \ldots & \ldots & \ldots 
+				\end{tabular}
+			};
+		
+			\draw [->, ultra thick] (macrophage1.north east) --
+				 node [midway,above, align=center] {expression \\ measurement} 
+				 node [midway,below, align=center] {microarray, \\ RNA-seq, \\ scRNA-seq, \\ \ldots}
+				 (gct);
+		
+			\node[align=center] (dge) at (13,-1.6) {
+				\textbf{DGE top table} \\[3pt]
+				\setlength\arrayrulewidth{2pt}
+				\setlength\tabcolsep{0pt}
+				\arrayrulecolor{white}
+				\begin{tabular}{r|c|c|c|c}
+					& S1  & S2 & S3 & S4  \\
+					\hline
+					COL1A1 & \cellcolor{red} & \cellcolor{red!80} & \cellcolor{blue!50} & \cellcolor{blue!20} \\
+					\hline
+					PLEC & \cellcolor{red!80} & \cellcolor{red!60} & \cellcolor{blue!70} & \cellcolor{blue!50} \\
+					\hline
+					LOXL4 & \cellcolor{blue!50} & \cellcolor{blue!30} & \cellcolor{red!80} & \cellcolor{red!60} \\
+					\ldots & \multicolumn{4}{c}{\ldots} \\
+				\end{tabular}
+				\arrayrulecolor{black}
+			};
+		
+			\draw [->, ultra thick] (gct) -- 
+				node [midway,above] {DGE analysis} 
+				node [midway,below, align=center] (dgedesc) {edgeR, \\ DGEseq, \\ limma, \\ \ldots} (dge);
+		
+			\node[align=left, draw=black, ultra thick, inner sep=3pt,] (gse) at (20.5,-1.6) {
+				\textbf{Gene set top table} \\[1em]
+				\textit{1. Anchoring fibril formation} \\
+				$\left\lbrace COL1A1, COL1A2, \ldots \right\rbrace$ \\[0.5em]
+				
+				\textit{2. Formation of collagen fibres} \\
+				$\left\lbrace LAMA3, LOXL4, \ldots \right\rbrace$ \\[0.5em]
+				
+				\textit{3. Hemidesmosome formation} \\
+				$\left\lbrace PLEC, LAMB3, \ldots \right\rbrace$
+			};
+		
+			\draw [->, ultra thick] (dge) -- 
+				node [midway,above] {GSE analysis} 
+				node [midway,below, align=center] {CAMERA, \\ \ldots} (gse);
+		
+			\node[align=right] (fanno) at (5,-6) {
+				\textbf{Feature annotation} \\[3pt]
+				\setlength\tabcolsep{3pt}s
+				\begin{tabular}{r|c|c|c}
+					& Symbol & Name& \ldots \\
+					\hline
+					Sensor 1 & COL1A1 & Collagen type I alpha 1 chain  & \multirow{4}{*}{\vdots} \\
+					Sensor 2 & COL1A2 &  Collagen type I alpha 2 chain &  \\
+					Sensor 3 & LAMA3 &  Laminin Subunit Alpha 3  &  \\
+					\ldots & \ldots & \ldots & \\
+				\end{tabular}
+			};
+		
+			\node[align=left] (sanno) at (14.5,-6) {
+				\textbf{Sample annotation} \\[3pt]
+				\setlength\tabcolsep{3pt}
+				\begin{tabular}{r|c|c|c}
+					& Cell type & Replication & \ldots  \\
+					\hline
+					S1 & Macrophage & 1 & \multirow{4}{*}{\vdots} \\
+					S2 & Macrophage &  2 &  \\
+					S3 & Microglia & 1 & \\
+					S4 & Microglia & 2 & \\
+				\end{tabular}
+			};
+		
+			\draw [->, ultra thick] (fanno) -- (dgedesc);
+		
+			\draw [->, ultra thick] (sanno) -- (dgedesc);
+		
+			\node at (0,1) {\circled{1}};
+			\node at (6,1) {\circled{2}};
+			\node at (13,1) {\circled{3}};
+			\node at (21,1) {\circled{4}};
+			
+			\node at (5,-4) {\circled{5}};
+			\node at (14,-4) {\circled{6}};
+		
+		\end{tikzpicture}% <------ Don't forget this %
+	}
+		
+	\caption{Gene expression analysis work flow}
+	\label{fig:gene_expression_analysiss}
+\end{centeredFigure}
 
-\section{Protein-protein interactions}
+At first \circled{1}, a biologist prepares at least two groups of cell lines (generally called samples). The grouping depends on the desired comparison a researcher wants to study, like different immune cell types (e.g. macrophages vs microglia cells~\cite{10.3389/fncel.2013.00045}), healthy cells vs. tumor cells, or perturbed vs. non-perturbed cells. By perturbation we mean any type of cell modification (gene knock-out) or manipulation of the cell environment (e.g. adding drug compounds). It is common practice to cultivate more than one cell line under the same experimental condition (aka. technical replicates) to ensure reproducibility.
+
+The next task describes the generation of gene expression profiles \circled{2}. This involves fixing the cells,  dissolving their membrane, and extracting all \acrshort{rna} fragments. Different methods exist to quantify the \acrshort{rna} concentration per gene and by extension the expression levels. The most frequently used methods are microarray assays, \acrfull{rnaseq}~\cite{citeulike:691434}, and \acrfull{scrnaseq}~\cite{Eberwine2013}. Each method requires different laboratory tasks and computational preprocessing algorithm. The end result of this stage is a table that shows the expression levels for every gene in every sample. The actual meaning of the value can differ depending on the used preprocessing technique. In can, for instance, stand for the total number of \acrshort{rna} fragments counted per gene when using \acrshort{rnaseq}.
+
+After obtaining the raw data, a bioinformatician use linear models to detect genes that are differentially expressed between sample groups \circled{3}. For instance, a widely used software package called edgeR models the entire gene expression experiment as negative binomial distribution to control gene-wise dispersion~\cite{doi:10.1093/bioinformatics/btp616}. The package edgeR uses a variant of the Fisher's exact test to detect \acrfull{dge}. Other packages like limma~\cite{doi:10.1093/nar/gkv007} or DGEseq~\cite{doi:10.1093/bioinformatics/btp612} are flavored depending on the number of technical replicates or used expression measurement technique. 
+
+Experience tells us that genes reported from \acrshort{dge} analysis alone give to view information behind the actual biological phenomena. A single gene can be involved in multiple, partially unknown biological processes or is just an artifact from prior \acrshort{dge} analysis. \acrfull{gse} algorithms try to overcome this issue by using statistical methods and external information about biological processes. One prominent example is implemented in the software package CAMERA~\cite{Wu2012}, which uses competitive gene set tests. The idea behind this competitive tests is to compare every genes inside a gene set relatively to all other genes measured in the experiment. CAMERA in particular uses a modified two-sided $t$-tests capable of detecting inter-gene correlations. The result of this step is a high score \circled{4} of gene sets reflected by the prior list of differentially expressed genes. The content of gene sets used for the \acrshort{gse} is arbitrary and the depends on what sources the bioinformatician choses for analysis. Examples of dedicated gene set databases are MSigDB~\cite{doi:10.1093/bioinformatics/btr260} and Reactome~\cite{doi:10.1093/nar/gki072}. 
+
+It is important to note the entire process relies on the existence of feature annotation data \circled{5} and sample annotation data \circled{6}. The feature annotation gives additional information about the measured genes (e.g. name and description of the actual gene that is associated with a particular sensor slot). The sample annotation hold information about origin, and preparation steps for each analyzed cell sample (e.g. cell type, tissue origin, used chemicals).
+
+\section{Transcriptional networks \& protein-protein interactions}
+
+* Idea
+* What data is inside it
+* Potential as distance metric and limitations
 
 \section{Gene ontology}
 
+* Idea
+* What data is inside it
+* Potential as distance metric and limitations
+
+%\subsection{GO term enrichment}
+%
+%https://academic.oup.com/bioinformatics/article/22/13/1600/193669
+%
+%\subsection{GO term similarity}
+%
+%https://academic.oup.com/bioinformatics/article/26/7/976/213143
+
 \section{Natural language processing}
 
+* TODO NEEDS EXPANDINF
+
 %% ==============================
-\chapter{Materials and methods}
-\label{ch:methods}
+\chapter{Materials and methods} \label{ch:methods}
 %% ==============================
 
 \section{Reference data}
@@ -332,7 +498,25 @@ Second, a bioinformatician utilize gene expression analysis pipelines to detect 
 
 \subsection{Network-based measurements}
 
+Shortest path problem:
+Not Robust (show example)
+* k-shortest path better, but also not that Robust
+* Robust shortest path problem is NP-complete and therefore prohibited
+
+
+Variances:
+Average over pairwise node paths violates d(x,y) = 0 <=> x=y condition
+Mean over Min of 
+
 \subsection{Word2vec models \& measurements}
+
+%  NLP Word Processing:
+%* split (\s,",",(,),<br>), lowercase
+%* Worder len > 1
+%* filter stopwords
+%* filter what is not in vocabulary of trained data
+
+
 
 %\section{Gene Expression Analysis}
 %
@@ -527,13 +711,7 @@ Second, a bioinformatician utilize gene expression analysis pipelines to detect 
 %	\caption{Overview of example experiments} \label{fig:example_experiments}
 %\end{table}
 %
-%\subsection{GO term enrichment}
-%
-%https://academic.oup.com/bioinformatics/article/22/13/1600/193669
-%
-%\subsection{GO term similarity}
-%
-%https://academic.oup.com/bioinformatics/article/26/7/976/213143
+
 
 %% ==============================
 \chapter{Results \& Discussion}
@@ -569,7 +747,7 @@ Second, a bioinformatician utilize gene expression analysis pipelines to detect 
 %% ==============================
 
 
-\section{ROGER - Roche Omnibus of Gene Expression Regulation}
+\section{ROGER - Roche Omnibus of Gene Expression Regulation} \label{sec:roger}
 
 \subsection{State of the art}
 
@@ -584,17 +762,21 @@ Second, a bioinformatician utilize gene expression analysis pipelines to detect 
 \subsubsection{Data structures \& architecture}
 
 \subsubsection{Visualizations \& data access}
+ 
+\newpage 
 
-\section{List of Acronyms}
+\section{List of acronyms}
 %\setglossarysection{section}
 \renewcommand{\glossarysection}[2][]{}
 \printglossaries
 
-\todo{List of figures?}
-%\listoffigures
+\section{List of figures}
 
-\todo{List of tables?}
-%\listoftables
+\listoffigures
+
+\section{List of tables}
+
+\listoftables
 
 \normalsize
 
