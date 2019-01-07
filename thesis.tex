@@ -206,7 +206,7 @@ I hereby declare that this document has been composed by myself and describes my
 
 \centerline{\textbf Abstract}
 
-The primary objective of gene set enrichment analysis is to annotate genes of interest with a-priory knowledge in the form of curated gene sets. The problem in this method lies in the large number of reported gene sets and their varying information content. Previous publications suggest to use unsupervised learning methods like hierarchical clustering or self-organized maps to increase interpretability, but there is no metric to assess the quality of these clustering methods or the difference between gene sets itself. We therefore evaluated statistical methods (minkowski, jaccard, kappa-statistic), tree-based methods (gene ontology), network-based methods (shortest path in protein-protein networks), and method based on natural language processing for their capability to measure a biologically plausible distance between gene sets. We used pathway trees from Reactome and a curated tree of immune cell types with corresponding gene sets to benchmark these distance methods.  \todo{TODO what is the conclusion?}
+The primary objective of gene set enrichment analysis is to annotate genes of interest with a-priory knowledge in the form of curated gene sets. The problem in this method lies in the large number of reported gene sets and their varying information content. Previous publications suggest to use unsupervised learning methods like hierarchical clustering or self-organized maps to increase interpretability, but there is no metric to assess the quality of these clustering methods or the difference between gene sets itself. We therefore evaluated statistical methods (minkowski, jaccard, kappa-statistic), tree-based methods (gene ontology), network-based methods (shortest path in protein-protein networks), and method based on natural language processing for their capability to measure a biologically plausible distance between gene sets. We used pathway trees from Reactome and a curated tree of immune cell types with corresponding gene sets to benchmark these distance methods. \todo{TODO what is the conclusion?}
 
 \vskip 2cm
 
@@ -454,33 +454,60 @@ The next task describes the generation of gene expression profiles \circled{2}. 
 
 After obtaining the raw data, a bioinformatician use linear models to detect genes that are differentially expressed between sample groups \circled{3}. For instance, a widely used software package called edgeR models the entire gene expression experiment as negative binomial distribution to control gene-wise dispersion~\cite{doi:10.1093/bioinformatics/btp616}. The package edgeR uses a variant of the Fisher's exact test to detect \acrfull{dge}. Other packages like limma~\cite{doi:10.1093/nar/gkv007} or DGEseq~\cite{doi:10.1093/bioinformatics/btp612} are flavored depending on the number of technical replicates or used expression measurement technique. 
 
-Experience tells us that genes reported from \acrshort{dge} analysis alone give to view information behind the actual biological phenomena. A single gene can be involved in multiple, partially unknown biological processes or is just an artifact from prior \acrshort{dge} analysis. \acrfull{gse} algorithms try to overcome this issue by using statistical methods and external information about biological processes. One prominent example is implemented in the software package CAMERA~\cite{Wu2012}, which uses competitive gene set tests. The idea behind this competitive tests is to compare every genes inside a gene set relatively to all other genes measured in the experiment. CAMERA in particular uses a modified two-sided $t$-tests capable of detecting inter-gene correlations. The result of this step is a high score \circled{4} of gene sets reflected by the prior list of differentially expressed genes. The content of gene sets used for the \acrshort{gse} is arbitrary and the depends on what sources the bioinformatician choses for analysis. Examples of dedicated gene set databases are MSigDB~\cite{doi:10.1093/bioinformatics/btr260} and Reactome~\cite{doi:10.1093/nar/gki072}. 
+Experience tells us that genes reported from \acrshort{dge} analysis alone give to view information behind the actual biological phenomena. A single gene can be involved in multiple, partially unknown biological processes or is just an artifact from prior \acrshort{dge} analysis. \acrfull{gse} algorithms try to overcome this issue by using statistical methods and external information about biological processes. One prominent example is implemented in the software package CAMERA~\cite{Wu2012}, which uses competitive gene set tests. The idea behind this competitive tests is to compare every genes inside a gene set relatively to all other genes measured in the experiment. CAMERA in particular uses a modified two-sided $t$-tests capable of detecting inter-gene correlations. The result of this step is a high score \circled{4} of gene sets reflected by the prior list of differentially expressed genes. The content of gene sets used for the \acrshort{gse} is arbitrary and the depends on what sources the bioinformatician choses for analysis. Gene sets from MSigDB~\cite{doi:10.1093/bioinformatics/btr260}, for instance, contains genes that characterize a specific cell type or cell condition. The database Reactome~\cite{doi:10.1093/nar/gki072} on the other hand offers gene sets containing these genes that are part of a particular biological process (aka. pathway).
 
 It is important to note the entire process relies on the existence of feature annotation data \circled{5} and sample annotation data \circled{6}. The feature annotation gives additional information about the measured genes (e.g. name and description of the actual gene that is associated with a particular sensor slot). The sample annotation hold information about origin, and preparation steps for each analyzed cell sample (e.g. cell type, tissue origin, used chemicals).
 
-\section{Transcriptional networks \& protein-protein interactions}
+\section{Pathway \& protein-protein interaction networks}
 
-* Idea
-* What data is inside it
-* Potential as distance metric and limitations
+We can describe every reaction inside or outside a cell as network of protein interactions with organic chemicals, \acrshort{rna}, \acrshort{dna}, or other proteins. \Cref{fig:pathway} illustrates an excerpt of such an interaction network during the mitotic cell cycle.
+
+\begin{centeredFigure}[!h]
+	\includegraphics[scale=0.8]{figures/introduction/pathway.pdf}
+	\caption{Expert of the mitotic cell cycle.  The rectangular boxes and boxes with octagon shape represent proteins. The green nodes represent other organic compounds. The entire pathway involves over different 400 proteins}
+	\label{fig:pathway}
+\end{centeredFigure}
+
+Public databases like BioGRID~\cite{doi:10.1093/nar/gkw1102} offer a collection of known protein-protein interaction as annotated edge-list. Each edge represents the interaction between one protein with another and hold information about author, detection method, and interaction type. We can use these data sources to compare gene sets in a graph-based representation. It is important to note that not all protein-protein interactions are necessarily part of an actual biological process. This applies for these  protein-protein interactions that researchers discovered outside a cell through regular chemical reaction assay. We use the term pathway to distinguish comprehensive protein-protein interaction networks provided by BioGRID with networks that are know to exist in living cells. \todo{reference for BioGRID}
 
 \section{Gene ontology}
 
-* Idea
-* What data is inside it
-* Potential as distance metric and limitations
+\newacronym{go}{GO}{Gene Ontology}
 
-%\subsection{GO term enrichment}
-%
-%https://academic.oup.com/bioinformatics/article/22/13/1600/193669
-%
-%\subsection{GO term similarity}
-%
-%https://academic.oup.com/bioinformatics/article/26/7/976/213143
+The \acrfull{go} maintained by the gene ontology consortium~\cite{Ashburner2000,doi:10.1093/nar/gkw1108} is a collection fo controlled vocabulary (aka. \acrshort{go} terms). Every term has is unique identifier (e.g. GO:0030234) and is associated in one of three categories: 1) biological process (e.g. wound healing, epithelial cell proliferation), 2) cellular component (cytoplasm, organelle part), and 3) molecular function (e.g. catalytic activity, enzyme regulator activity).
+
+\begin{centeredFigure}[!h]
+	\includegraphics[scale=0.4]{figures/introduction/go.png}
+	\caption{Excerpt of the gene ontology}
+	\label{fig:go}
+\end{centeredFigure}
+
+\acrshort{go} terms can have 8 different type of relationships between each other, as seen in \cref{fig:go}. If we only consider the ``is a'' relationships, all \acrshort{go} term of the same category resemble a rooted tree structure. In addition, the gene ontology consortium maintains a mapping between \cref{fig:go} terms and gene identifier, where each \cref{fig:go} term is associated with multiple gene identifiers. 
+
+Researcher can use the gene ontology for \acrshort{gse} analysis, where the reported ``gene sets'' are \acrshort{go} terms~\cite{doi:10.1093/bioinformatics/btl140}.  Additionally, algorithms exist to define an arithmetic similarity measurement for \acrshort{go} terms~\cite{doi:10.1093/bioinformatics/btq064}.
 
 \section{Natural language processing}
 
-* TODO NEEDS EXPANDINF
+\newacronym{nlp}{NLP}{Natural Language Processing}
+\newacronym{bow}{BOW}{Bag Of Words}
+\newacronym{wmd}{WMD}{Word Mover Distance}
+
+According to Pyysalo et al. \cite{Pyysalo:2013b}, publication databases like the PubMed Central (PMC) contain over 700,000 full-text articles with valuable information about biological processes. \acrfull{nlp} techniques like word embeddings opens the opportunity to detect linguistic relationships within unstructured text as it is found in literature databases.
+
+\subsection{Word embedding}
+
+Word embeddings are a class of machine learning models that learn feature vectors from a large set of arbitrary text (aka. text corpus). These feature vectors can be used to project words in a vector space while preserving their semantic similarities. For instance, assume two genes which are part of the same pathway. Then it is likely that the name of the genes appear relatively close to each other in multiple publication. Word embeddings reflect the text distances between the gene names to the feature vector space. Mature examples of world embedding are word2vec techniques, which use feedforward neural as supervised learning method networks~\cite{journals/corr/abs-1301-3781}. 
+%\Cref{fig:w2v} shows the two variants of the word2vec model. 
+
+%\begin{centeredFigure}[!h]
+%	\includegraphics{figures/introduction/word2vec.pdf}
+%	\caption{The two variants of the word2vec learning method \cite{journals/corr/abs-1301-3781}}
+%	\label{fig:w2v}
+%\end{centeredFigure}
+
+\subsection{Document queries}
+
+Inside a vector space, we can use mathematical functions like the euclidean distance or the cosine distance to measure the similarity between single word. However, gene sets consists of multiple genes and can carry additional information like a description or \acrshort{go} terms. One method to compare two sets of words (aka. documents) with each other is word averaging, where the pairwise sum or average of all word vectors build a representation of the document. Kusner et al. claims, however, that ignoring individual word distances could poor comparability between documents that have few words in commin~\cite{Kusner:2015:WED:3045118.3045221}. Other solutions to this problem would be the use of alternative vector representations (e.g. \acrfull{bow}) or more sophisticated distances based on the conventional word vectors (e.g. \acrfull{wmd})~\cite{Kusner:2015:WED:3045118.3045221}. 
 
 %% ==============================
 \chapter{Materials and methods} \label{ch:methods}
@@ -497,6 +524,8 @@ It is important to note the entire process relies on the existence of feature an
 \subsection{Mathematical measurements}
 
 \subsection{Network-based measurements}
+
+%Studying these networks and identifying their unique functions in the cell live-cycle is a time-consuming task and involves requires laboratory techniques like gene-editing, micro fluorescence, and sequencing. 
 
 Shortest path problem:
 Not Robust (show example)
