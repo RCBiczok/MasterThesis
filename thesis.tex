@@ -7,15 +7,20 @@
 \usepackage{caption}
 \usepackage{blkarray}
 \usepackage{framed}
+\usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage[linesnumbered,ruled]{algorithm2e}
 \usepackage{graphbox}
 \usepackage{multicol}
 \usepackage{minted}
+\usepackage{etoolbox}
 \usepackage{multicol}
 \usepackage{colortbl}
 \usepackage{wrapfig}
 \usepackage{hyperref}
 \usepackage{cleveref}
+\usepackage{lscape}
+\usepackage{mathtools}
 \usepackage{todonotes}
 \usepackage{multirow}
 \usepackage{multirow}
@@ -23,6 +28,7 @@
 \usepackage{environ}
 \usepackage{tabularx}
 \usepackage{tikz}
+\usepackage{tikz-qtree}
 \usepackage[acronym,nomain]{glossaries}
 
 %% ---------------------------------
@@ -55,6 +61,19 @@
 %% | Commands                      |
 %% ---------------------------------
 
+\DeclareMathOperator{\bin}{bin}
+\DeclareMathOperator{\countOp}{count}
+\DeclareMathOperator{\ppi}{ppi}
+\DeclareMathOperator{\simOp}{sim}
+\DeclareMathOperator{\overlap}{overlap}
+\DeclareMathOperator{\textToVocs}{text2vocs}
+\DeclareMathOperator{\wToV}{w2v}
+\DeclareMathOperator{\GO}{GO}
+\DeclareMathOperator{\GOD}{GOD}
+\DeclareMathOperator{\vecOp}{vec}
+\DeclareMathOperator{\wToVSum}{w2vSum}
+
+
 \newtheorem{definition}{Definition} \numberwithin{definition}{chapter}
 \newtheorem{theorem}[definition]{Theorem}
 \newtheorem{lemma}[definition]{Lemma}
@@ -62,23 +81,6 @@
 \newtheorem{conjecture}[definition]{Conjecture}
 
 \newcolumntype{C}{>{\centering\arraybackslash}X}
-
-%% TODO : Is this ever used?
-\NewEnviron{myTable}[4]{%
-	\vspace{5px}%
-	\centering%
-	\rowcolors{2}{black!25}{white}%
-	\captionsetup{type=table}
-	\begin{tabular}{|#2|}%
-		\arrayrulecolor{black}%
-		\hline%
-		\BODY
-		\hline%
-	\end{tabular}%
-	\vspace{-6px}%
-	\captionof{table}[#3]{#3#1} \label{#4}%
-	\vspace{5px}
-}
 
 \NewEnviron{centeredFigure}[1][]{%
 	\begin{figure}[#1]
@@ -206,7 +208,7 @@ I hereby declare that this document has been composed by myself and describes my
 
 \centerline{\textbf Abstract}
 
-The primary objective of gene set enrichment analysis is to annotate genes of interest with a-priory knowledge in the form of curated gene sets. The problem in this method lies in the large number of reported gene sets and their varying information content. Previous publications suggest to use unsupervised learning methods like hierarchical clustering or self-organized maps to increase interpretability, but there is no metric to assess the quality of these clustering methods or the difference between gene sets itself. We therefore evaluated statistical methods (minkowski, jaccard, kappa-statistic), tree-based methods (gene ontology), network-based methods (shortest path in protein-protein networks), and method based on natural language processing for their capability to measure a biologically plausible distance between gene sets. We used pathway trees from Reactome and a curated tree of immune cell types with corresponding gene sets to benchmark these distance methods. \todo{TODO what is the conclusion?}
+The primary objective of gene set enrichment analysis is to annotate genes of interest with a-priory knowledge in the form of curated gene sets. The problem in this method lies in the large number of reported gene sets and their varying information content. Previous publications suggest to use unsupervised learning methods like hierarchical clustering or self-organized maps to increase interpretability, but there is no metric to assess the quality of these clustering methods or the difference between gene sets itself. We therefore evaluated statistical methods (minkowski, jaccard, kappa-statistic), tree-based methods (gene ontology), network-based methods (shortest path in protein-protein networks), and method based on natural language processing for their capability to measure a biologically plausible distance between gene sets. We used pathway trees from Reactome and a curated tree of immune cell types with corresponding gene sets to benchmark these distance methods.  We found out that document queries with Word Mover's distance on word2vec embedding models yield the best results. \todo{refine based on additional dists}
 
 \vskip 2cm
 
@@ -222,11 +224,11 @@ The primary objective of gene set enrichment analysis is to annotate genes of in
 
 \centerline{\textbf Acknowledgements}
 
-First and foremost I want to thank the two most valuable point of information Prof Dr. Alexandros Stamatakis and Dr. Jitao David Zhang. The open minded nature of Prof. Stamatakis made this research collaboration possible and his leading expertise in computational bioinformatics tremendously helped us to keep this master thesis in an academic format. Dr. Zhang also proved his courage and passion in academia by entrusting a theoretical biology research project to an computer science student. His knowledge as principle bioinformatician / biostatistician in an industrial and academic research environment complemented the methodical / computer science expertise of Stamatakis and me beyond expectations.
+First and foremost I want to thank the two most valuable point of information Prof Dr. Alexandros Stamatakis and Dr. Jitao David Zhang. The open minded nature of Prof. Stamatakis made this research collaboration possible and his leading expertise in computational bioinformatics tremendously helped us to keep this master thesis in an academic format. Moreover, Dr. Zhang proved his courage and passion in academia by entrusting a theoretical biology research project to an computer science student. His knowledge as principle bioinformatician / biostatistician in an industrial and academic research environment complemented the methodical / computer science expertise of Stamatakis and me beyond expectations.
 
 I send my greetings and thankfulness to Prof. Dr. Ralf H. Reussner, who did not hesitate to take the responsibility as second reviewer. I was a former participant in a two-term research project under the supervision of Prof. Reussner where he demonstrated a high level of methodical knowledge in the engineering aspect of computer science. 
 
-In addition, I want to highlight the support from Gregor Sturm, Sarah Lutteropp, and Lucas Czech\todo{Will lucas be a Dr with the end of this thesis?}. Gregor Sturm is a former master thesis student of Dr. Zhang who shared the curated tree of immune cell types with their respective marker genes. He also eagerly helped me to extract  all necessary information from his publicly available code repository to save time on my side. Sarah Lutteropp is a PhD student of Prof. Stamatakis and shared her knowledge about methods and limitations in distance-based (phylogenetic) tree inference algorithms. Lucas Czech is also a PhD student under supervision of Prof. Stamatakis and provided me with an implementation skeleton for creating unsupervised clustering algorithms similar to $k$-means in C++.
+In addition, I want to highlight the support from Gregor Sturm, Sarah Lutteropp, and Lucas Czech\todo{Will lucas be a Dr with the end of this thesis?}. Gregor Sturm is a former master thesis student of Dr. Zhang who shared the curated tree of immune cell types with their respective marker genes. Moreover, he eagerly helped me to extract  all necessary information from his publicly available code repository to save time on my side. Sarah Lutteropp is a PhD student of Prof. Stamatakis and shared her knowledge about methods and limitations in distance-based (phylogenetic) tree inference algorithms. Lucas Czech is also a PhD student under supervision of Prof. Stamatakis and provided me with an implementation skeleton for creating unsupervised clustering algorithms similar to $k$-means in C++.
 
 Although I wish to thank every person in my live who inspired me, helped me, or even influenced my belief system, I must restrict myself to the following group of people that deserve a special place in this section: All members of the HITS Exelixis Lab (Prof. Dr. Alexandros Stamatakis, Dr. Alexey Kozlov, Lucas Czech, Sarah Lutteropp, Pierre Barbera, Benoit Morel, and Ben Bettisworth) and ROCHE BEDA group. Every single member treated me like an equal researcher.
 
@@ -267,10 +269,10 @@ Molecular biology is the aspect of life science thats investigates biological pr
 %	\caption{Central dogma of molecular biology~\cite{citeulike:691434}}
 %	\label{fig:central_docma}
 %\end{wrapfigure}
-%The biggest problem in answering this questions lies within the black-box nature of every living cell. We know that genes play an important role in determine the structure and basic behavior (also known as morphology) of every organism~\cite{citeulike:691434}. Ongoing research also reveals the functionalities behind each gene ofna n or    
+%The biggest problem in answering this questions lies within the black-box nature of every living cell. We know that genes play an important role in determine the structure and basic behavior (also known as phenotype) of every organism~\cite{citeulike:691434}. Ongoing research also reveals the functionalities behind each gene ofna n or    
 The common procedure to research these questions is to conduct wet lab experiments on prepared cell cultures followed by a computer-assistant gene expression analysis. 
 Gene expression is the fundamental biological process of every organism that describes the transcription of \acrfull{rna} from \acrfull{dna} and the translation from \acrshort{rna} to proteins~\cite{citeulike:691434}. 
-Collecting and analyzing the gene expression level of every gene inside an organism allows us to identify differentially expressed genes that cause morphological differences between cell groups or cell types~\cite{doi:10.1093/bioinformatics/btp616}. To the end, bioinformaticians use public databases of gene sets to see which known cell components or biological processes are reflected by the previously inferred list of differential expressed genes. 
+Collecting and analyzing the gene expression level of every gene inside an organism allows us to identify differentially expressed genes that cause phenotypic differences between cell groups or cell types~\cite{doi:10.1093/bioinformatics/btp616}. To the end, bioinformaticians use public databases of gene sets to see which known cell components or biological processes are reflected by the previously inferred list of differential expressed genes. 
 Every gene set represents discovered knowledge in form of name, description and involved genes of a particular biological process. 
 Ideally, the entire procedure results in a list of gene sets that uniquely explain the effects of the original wet lab experiment~\cite{doi:10.1093/nar/gks461} (see \cref{sec:gene_expression} for further information about gene expression analysis).
 
@@ -282,7 +284,7 @@ Existing literature suggest supervised learning methods to organize gene sets in
 
 \section{Own contribution}
 
-We present in this thesis a systematic evaluation of different distance metrics for pairwise gene set comparisons. We implemented metrics based on 1) statistic methods, 2) gene ontology trees, 3) protein-protein interaction graph networks, and 4) natural language processing methods. For comparing the performance of each distance implementation, we extracted gene sets from data sources whose relationships are already know and preserved as rooted trees. These data sources include 2\todo{update to newest} subsets of the Reactome pathway database~\cite{doi:10.1093/nar/gki072} and a manually curated collection of marker genes for 36\todo{update to newest} human immune cell types~\cite{Sturm463828}. We bundled all distances implementations, data preprocessing, and analysis scripts into a Python package that can be readily extended or included into other algorithms.
+We present in this thesis a systematic evaluation of different metrics for pairwise gene set comparisons. We implemented metrics based on 1) statistic methods, 2) gene ontology trees, 3) protein-protein interaction graph networks, and 4) natural language processing methods. For comparing the performance of each distance implementation, we extracted gene sets from data sources whose relationships are already know and preserved as rooted trees. These data sources include 2\todo{update to newest} subsets of the Reactome pathway database~\cite{doi:10.1093/nar/gki072} and a manually curated collection of marker genes for 36\todo{update to newest} human immune cell types~\cite{Sturm463828}. We bundled all distances implementations, data preprocessing, and analysis scripts into a Python package that can be readily extended or included into other algorithms.
 
 Besides gene set analysis, we also spend a significant amount of time building a gen expression analysis framework based on Python. It utilizes a client-server architecture with3 different front-ends for executing and persisting new gene expression experiments (see \cref{sec:roger} for more information).
 
@@ -290,9 +292,9 @@ Besides gene set analysis, we also spend a significant amount of time building a
 
 The reminder of this document follows the structure of a conventional bioinformatics paper. In \cref{ch:introduction}, we will explain the anatomy of a gene expression analysis pipeline in greater details. In addition, the introduction chapter will cover basic concepts about natural language processing with Word2Vec models and the composition about biological data sources (e.g. gene ontologies, \acrshort{ppi} networks).
 
-\Cref{ch:methods} gives more details about the algorithms behind each implemented distance metric. We will also summarize the preprocessing steps for the used evaluation data in this chapter.
+\Cref{ch:methods} gives more details about the algorithms behind each implemented metric. We will also summarize the preprocessing steps for the used evaluation data in this chapter.
 
-In \cref{ch:results}, present benchmark results from each distance metric over the different sets of evaluation date. We will also discuss certain outcome of the results and assess the limitations of different distance metrics. \todo{Mention the key points here}
+In \cref{ch:results}, present benchmark results from each metric over the different sets of evaluation date. We will also discuss certain outcome of the results and assess the limitations of different metrics. \todo{Mention the key points here}
 
 And finally, we will draw a final conclusion about our conducted experiments and we will give a future outlook about potential follow-up research in \cref{ch:results}.
 
@@ -329,7 +331,7 @@ And finally, we will draw a final conclusion about our conducted experiments and
 \newacronym{dge}{DGE}{Differential gene expression}
 \newacronym{gse}{GSE}{Gene set enrichment}
 
-Gene set enrichment is the bread and butter of every bioinformatician who tries to discover the genetic reason for morphological differences between cell lines. The basic process involves a series of wet and dry lab operations (\cref{fig:gene_expression_analysiss}).
+Gene set enrichment is the bread and butter of every bioinformatician who tries to discover the genetic reason for phenotypic differences between cell lines. The basic process involves a series of wet and dry lab operations (\cref{fig:gene_expression_analysiss}).
 
 \begin{centeredFigure}[!h]
 	\resizebox{\textwidth}{!}{% <------ Don't forget this %
@@ -464,17 +466,17 @@ We can describe every reaction inside or outside a cell as network of protein in
 
 \begin{centeredFigure}[!h]
 	\includegraphics[scale=0.8]{figures/introduction/pathway.pdf}
-	\caption{Expert of the mitotic cell cycle.  The rectangular boxes and boxes with octagon shape represent proteins. The green nodes represent other organic compounds. The entire pathway involves over different 400 proteins}
+	\caption[Expert of the mitotic cell cycle.]{Expert of the mitotic cell cycle.  The rectangular boxes and boxes with octagon shape represent proteins. The green nodes represent other organic compounds. The entire pathway involves over different 400 proteins}
 	\label{fig:pathway}
 \end{centeredFigure}
 
-Public databases like BioGRID~\cite{doi:10.1093/nar/gkw1102} offer a collection of known protein-protein interaction as annotated edge-list. Each edge represents the interaction between one protein with another and hold information about author, detection method, and interaction type. We can use these data sources to compare gene sets in a graph-based representation. It is important to note that not all protein-protein interactions are necessarily part of an actual biological process. This applies for these  protein-protein interactions that researchers discovered outside a cell through regular chemical reaction assay. We use the term pathway to distinguish comprehensive protein-protein interaction networks provided by BioGRID with networks that are know to exist in living cells. \todo{reference for BioGRID}
+Public databases like BioGRID~\cite{doi:10.1093/nar/gkw1102} offer a collection of known protein-protein interaction as annotated edge-list. Each edge represents the interaction between one protein with another and hold information about author, detection method, and interaction type. We can use these data sources to compare gene sets in a graph-based representation. It is important to note that not all protein-protein interactions are necessarily part of an actual biological process. This applies for these  protein-protein interactions that researchers discovered outside a cell through regular chemical reaction assay. We use the term pathway to distinguish comprehensive protein-protein interaction networks provided by BioGRID with networks that are known to exist in living cells~\cite{doi:10.1093/nar/gkw1102}.
 
 \section{Gene ontology}
 
 \newacronym{go}{GO}{Gene Ontology}
 
-The \acrfull{go} maintained by the gene ontology consortium~\cite{Ashburner2000,doi:10.1093/nar/gkw1108} is a collection fo controlled vocabulary (aka. \acrshort{go} terms). Every term has is unique identifier (e.g. GO:0030234) and is associated in one of three categories: 1) biological process (e.g. wound healing, epithelial cell proliferation), 2) cellular component (cytoplasm, organelle part), and 3) molecular function (e.g. catalytic activity, enzyme regulator activity).
+The \acrfull{go} maintained by the gene ontology consortium~\cite{Ashburner2000,doi:10.1093/nar/gkw1108} is a collection fo controlled vocabulary (aka. \acrshort{go} terms). Every term has is unique identifier (e.g. GO:0030234) and is associated in one of three categories: 1) biological process (e.g. wound healing, epithelial cell proliferation), 2) cellular component (cytoplasm, organelle part), and 3) molecular function (e.g. catalytic activity, enzyme regulator activity). 
 
 \begin{centeredFigure}[!h]
 	\includegraphics[scale=0.4]{figures/introduction/go.png}
@@ -482,17 +484,31 @@ The \acrfull{go} maintained by the gene ontology consortium~\cite{Ashburner2000,
 	\label{fig:go}
 \end{centeredFigure}
 
-\acrshort{go} terms can have 8 different type of relationships between each other, as seen in \cref{fig:go}. If we only consider the ``is a'' relationships, all \acrshort{go} term of the same category resemble a rooted tree structure. In addition, the gene ontology consortium maintains a mapping between \cref{fig:go} terms and gene identifier, where each \cref{fig:go} term is associated with multiple gene identifiers. 
+\acrshort{go} terms can have 8 different type of relationships between each other, as seen in \cref{fig:go}. If we only consider the ``is a'' relationships, all \acrshort{go} term of the same category resemble a rooted tree structure. The gene ontology consortium maintains a mapping between \cref{fig:go} terms and gene identifiers, where each \cref{fig:go} term is associated with multiple gene identifiers. In addition, every term carries information origin (as standard evidence code) and function (as unstructured text).
 
 Researcher can use the gene ontology for \acrshort{gse} analysis, where the reported ``gene sets'' are \acrshort{go} terms~\cite{doi:10.1093/bioinformatics/btl140}.  Additionally, algorithms exist to define an arithmetic similarity measurement for \acrshort{go} terms~\cite{doi:10.1093/bioinformatics/btq064}.
+
+\section{Phenotype traits}
+
+\newacronym{embl_ebi}{EMBL-EBI}{European Bioinformatics Institute}
+\newacronym{gwas}{GWAS}{Genome-wide association studies}
+\newacronym{efo}{EFO}{Experimental Factor Ontology}
+
+Experience shows that the number of observable phenotypes can become unmaintainable depending on the genetic variability of an organism. 
+The \acrfull{embl_ebi} provide a controlled vocabulary of traits to characterize phenotypes. 
+This vocabulary is called \acrfull{efo} and contains clinical and non-clinical traits. 
+A clinical trait represents either a disease (e.g. diabetes type 1) or a disease marker (e.g. measurements of blood glucose concentration). 
+Non-clinical traits describe morphological properties that are not disease-related (e.g. exe color). 
+Researchers use the standardized phenotype traits to associate diseases or other observable properties with their causing genes. For instance, the \acrfull{gwas} database provides a catalog of manually curated mapping between genes and traits based on findings from over 3000 conducted studies~\cite{doi:10.1093/nar/gkw1133}.
+This allows us to compare genes and gene sets based on their prototypical effects in the organisms. \todo{Add excerpt of GWAS}
 
 \section{Natural language processing}
 
 \newacronym{nlp}{NLP}{Natural Language Processing}
 \newacronym{bow}{BOW}{Bag Of Words}
-\newacronym{wmd}{WMD}{Word Mover Distance}
+\newacronym{wmd}{WMD}{Word Mover's Distance}
 
-According to Pyysalo et al. \cite{Pyysalo:2013b}, publication databases like the PubMed Central (PMC) contain over 700,000 full-text articles with valuable information about biological processes. \acrfull{nlp} techniques like word embeddings opens the opportunity to detect linguistic relationships within unstructured text as it is found in literature databases.
+According to Wilbur et al. \cite{KIM2017122}, publication databases like PubMed contain over 25 full-text articles with valuable information about biological processes. \acrfull{nlp} techniques like word embeddings opens the opportunity to detect linguistic relationships within unstructured text as it is found in literature databases.
 
 \subsection{Word embedding}
 
@@ -507,249 +523,527 @@ Word embeddings are a class of machine learning models that learn feature vector
 
 \subsection{Document queries}
 
-Inside a vector space, we can use mathematical functions like the euclidean distance or the cosine distance to measure the similarity between single word. However, gene sets consists of multiple genes and can carry additional information like a description or \acrshort{go} terms. One method to compare two sets of words (aka. documents) with each other is word averaging, where the pairwise sum or average of all word vectors build a representation of the document. Kusner et al. claims, however, that ignoring individual word distances could poor comparability between documents that have few words in commin~\cite{Kusner:2015:WED:3045118.3045221}. Other solutions to this problem would be the use of alternative vector representations (e.g. \acrfull{bow}) or more sophisticated distances based on the conventional word vectors (e.g. \acrfull{wmd})~\cite{Kusner:2015:WED:3045118.3045221}. 
+Inside a vector space, we can use mathematical functions like the euclidean distance or the cosine distance to measure the similarity between single word. However, gene sets consists of multiple genes and can carry additional information like a description or a list of \acrshort{go} terms. One method to compare two sets of words (aka. documents) with each other is word averaging, where the pairwise sum or average of all word vectors build a representation of the document. Kusner et al. claims, however, that ignoring individual word distances could poor comparability between documents that have few words in commin~\cite{Kusner:2015:WED:3045118.3045221}. Other solutions to this problem would be the use of alternative vector representations (e.g. \acrfull{bow}) or more sophisticated distances based on the conventional word vectors (e.g. \acrfull{wmd})~\cite{Kusner:2015:WED:3045118.3045221}. 
 
 %% ==============================
 \chapter{Materials and methods} \label{ch:methods}
 %% ==============================
 
+Our approach to investigate the similarity between arbitrary gene sets consists of two steps. 
+First, we extract reference trees and gene sets from manually curated data sources.
+Second, we implement metrics to compare individual gene sets with each other.
+
 \section{Reference data}
 
-\subsection{Reactome reference tree}
+\newacronym{ncbi}{NCBI}{National Center for Biotechnology Information}
+\newacronym{api}{API}{Application Program Interface}
+
+All used reference trees and gene sets originate from the Reactome database~\cite{doi:10.1093/nar/gki072} and a study conducted by Sturm et al. ~\cite{Sturm463828}. The reference organism in both data sources is the human species.
+
+Evey gene set from Reactome and Sturm et al. contains at least a name and one or more genes. In our reference data, the gene set name has a semantic meaning and describes either the biological process (Reactome) or the cell type (Sturm et al.) reflected by the containing genes.
+In general, neither the gene set name nor the type of identifiers used to specify the genes follow a common standard.
+Reactome, for instance, uses UniProt identifiers (open protein sequence database)~\cite{doi:10.1093/nar/gkw1099} as primary identifier type for genes. 
+However, we can use external annotation services to translate foreign gene identifier types to a preferred one. An example of such an annotation service is Ensembl BioMart~\cite{doi:10.1093/nar/gkx1098}, where a researcher can use the web side or a web service \acrshort{api}. 
+Moreover, a gene set curator can assign a gene set with additional information like alternative gene identifiers (e.g. gene symbols alongside to UniProt identifiers) or a description text. The description text contains more details about meaning or origin of the gene set, but is in general unstructured. 
+In addition, it is possible to enrich gene sets with information form other sources such as \acrshort{go} terms, gene traits, or any type of unstructured gene description. 
+
+Every used reference trees is rooted and can have inner notes with two or more children. 
+Nodes in a reference tree represents exactly one gene set. 
+We assume that the reference tree structure resembles the hierarchical relationships between the gene sets. 
+This assumption allows us to interpret the tree path lengths between two gene sets as biological distance. 
+We therefore consider a metric as biologically plausible if the pairwise distances calculated with the particular metric correlate with the pairwise path lengths.
+
+\subsection{Standard structure} \label{sec:gs_def}
+
+For illustrating the materials and methods used in this work, we define a data point for each gene set as 8-tuple:
+\begin{equation} \label{eq:gs_info}
+G= \left(G_N, G_{D}, G_{ID}, G_S, G_{GD}, G_{GO}, G_{GOD}, G_{T} \right)
+\end{equation}
+
+Each data point consists of the gene set name $G_N$, a gene set description $G_{RD}$, the actual set of genes as \acrshort{ncbi} gene identifiers~\cite{doi:10.1093/nar/gkl993} $G_{ID}$ and gene symbols $G_S$, a set of gene descriptions $G_{GD}$, a multiset of \acrshort{go} terms $G_{GO}$, a multiset of \acrshort{go} term descriptions $G_{GOD}$, and a multiset of phenotype traits $G_{T}$.
+\Cref{fig:gs_info} summarizes each element of a data point.
+We allow duplication in the multiset elements, because frequency in which formal words appear in data points could influence the similarity between gene sets. 
+For instance, data point $G_1$ and $G_2$ can share the same set of \acrshort{go} terms but the number in which each \acrshort{go} terms appear in each data point can still be a differentiating factor.
+
+\begin{table}[!h]
+	\begin{tabularx}{\linewidth}{c|l|X}
+		Symbol & Source & Summary \\
+		\hline
+		$G_N$ & Reactome, Sturm et al. & Gene set name where $G_N \in  \Sigma^*$  \\
+		$G_{D}$ & Reactome & Gene set description where $G_{D} \in \Sigma^*$ \\
+		$G_S$ & Reactome, Sturm et al. & Set of gene symbols where $G_S \subset \Sigma^*$ \\
+		$G_{GD}$& NCBI & Set of gene descriptions $G_{GD} \subset \Sigma^*$\\
+		$G_{ID}$ & Reactome, BioMart & Set of NCBI Gene identifiers with $G_{NCBI} \subset L_{NCBI}$ \\
+		$G_{GO}$& BioMart & Multiset of \acrshort{go} terms where $G_{GO} \subset L_{GO}$\\
+		$G_{GOD}$& BioMart & Multiset of \acrshort{go} term descriptions where $G_{GOD} \subset \Sigma^*$\\
+		$G_{T}$ & GWAS & Multiset of phenotype traits with $G_{T} \subset L_{GWAS}$\\
+	\end{tabularx}
+	\caption{Type of gen set information used in this study.}
+	\label{fig:gs_info}
+\end{table}
+
+We assume that $G_N$ is a string from the trivial formal language~\cite{Mendelson:2009:IML:1642730} $\Sigma^*$ where $\Sigma$ is the entire ASCII alphabet. 
+This assumption also applies to any description $G_D$ provided with the  gene set.
+We chose \acrshort{ncbi} as preferred gene identifiers for gene set genes, because Reactome already provide them as alternative to UniProt identifiers. 
+In addition, BioGrid uses \acrshort{ncbi} IDs as primary identifiers for their \acrshort{ppi} network data.
+$G_{ID}$ is therefore always a subset of $L_{NCBI}$ where the formal language $L_{NCBI} \subset \lbrace 0,\ldots,9 \rbrace^*$ represents all existing \acrshort{ncbi} identifiers. 
+Additionally, we collect the gene symbols $G_S$ that correspond to the \acrshort{ncbi} identifiers, where each gene symbol is an element of $\Sigma^*$. 
+It is more common to mention genes by their gene symbols in literature and therefore are more likely to appear in word embedding models. 
+Moreover, \acrshort{ncbi} offers gene descriptions, which we collect as set $G_{GD}$ for each gene set. 
+These gene descriptions can contain information like function, mutations, or pathology of a specific gene as unstructured text (hence $G_{GD} \subset \Sigma^*$).
+We used the BioMart annotation web services to collect all \acrshort{go} terms from each \acrshort{ncbi} gene ID as multiset $G_{GO}$. 
+All \acrshort{go} terms are part of a standardized collection of identifiers, which we address by $L_{GO} \subset \lbrace GO: \rbrace \cdot \lbrace 0, \ldots, 9 \rbrace^*$. 
+In addition, we used BioMart web services to download the term description of each \acrshort{go} term as multiset $G_{GOD}$.
+The \acrshort{go} consortium reviews the individual term description, but the descriptions follow neither a standard vocabulary nor a format (i.e., $G_{GOD} \subset \Sigma^*$).
+Finally, we used a downloadable database from the \acrshort{gwas} web site to gather all phenotype traits from each gene as multiset $G_T$. 
+The phenotype traits are all part of a controlled vocabulary we identify as $L_{GWAS} \subset \Sigma^*$.
+
+\subsection{Reactome reference trees}
+
+\newacronym{tsv}{TSV}{Tab Separated Values}
+
+Reactome is a publicly available database that provides peer-reviewed pathways~\cite{doi:10.1093/nar/gki072}. 
+The graph database consists of more than 20 rooted trees where each tree represents a high level activity such as ``Cell Cycle'', ``DNA Repair'', or ``Developmental Biology''.
+Each tree contains a hierarchy of pathways that either resemble a sub-activity within a bigger pathway or share a common effect (e.g. ``Disease of Immune System'' and ``Neurodegenerative diseases'' share the effect ``disease'' and are therefore children of pathway ``Disease''). 
+Every pathway in Reactome has an unique ID (e.g. R-HSA-1643685), a name, a set of gene with UniProt as primary gene identifier, alternative identifiers like \acrshort{ncbi} gene IDs, and a gene set description as unstructured text. 
+The meaning of the description text varies depending on how deep the pathway is located in one of the over 20 pathway trees. In pathway ``Disease'', the descriptions resembles an introducing summary over diseases. In contrast, the descendant pathway ``Binding of SHC1 to p-6Y-EGFR mutants'' describes all actor (genes and other organic molecules), interactions, and references involved in the pathway.
+
+For the evaluation of metrics, we will interpret every (sub) pathway as autonomous gene set. We utilize the following work flow to extract reference trees and data points for a given Reactome ID: 
+First, we consume the web service \acrshort{api} from Reactome to download the reference tree and all aforementioned information for each ancestor pathway.
+Second, we used the same web \acrshort{api} from Reactome to extract gene identifiers. The primary identifiers are UniProt IDs, but Reactom also offers \acrshort{ncbi} IDs. 
+We, however, filtered genes from a pathway if their associated UniProt ID has no corresponding \acrfull{ncbi} IDs.
+Third, we removed all ancestor pathways that appear more then once within the reference tree. 
+Fourth, we used web services from BioMart, \acrshort{ncbi}, and the data source from \acrfull{gwas} to annotate every gene set with gene descriptions, \acrshort{go} information, and phenotype traits.
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{l|r|r}
+		Reactome ID & No. used gene sets & No. removed gene sets \\
+		\hline
+		R-HSA-1474290 & 82 & 0 \\
+		R-HSA-373755 & 48 & 0 \\
+		R-HSA-8982491 & 40 & 0 \\
+		R-HSA-422475 & 335 & 1 \\
+	\end{tabular}
+	\caption{Reactome pathways used as reference trees.}
+	\label{fig:reactome_trees}
+\end{table}
 
 \subsection{Immune cell differentiation hierarchy}
 
-\section{Distance measurements}
+All cells of the human immune system descend from a common progenitor immune cell.
+Progenitor cells are specialized stem cells with the ability to differentiate into a dedicated set of cell types.
+It is possible to identify differentiation state and function of an immune cell by its so called marker genes. 
+Marker genes are genes whose expression levels give evidence to a specific cell function or state. 
+Gregor et al.~\cite{Sturm463828} utilize this knowledge to evaluate cell-type quantification methods. 
+They investigated the prediction accuracy of algorithms that quantify the fraction of cell types in any given tissue sample.
+For the evaluation process, Gregor et al. conducted a literature research to curate a hierarchy of 45 cell types.
+In addition, they collected a set of marker gene symbols for 38 of the 45 cell types if they are backed up by previous studies.
+Gregor et al. provide the cell type hierarchy and the marker genes as downloadable \acrfull{tsv} documents on a public source repository~\cite{Sturm463828}. 
 
-\subsection{Mathematical measurements}
+For our analysis, we interpreted the cell types with their individual set of marker genes as gene sets and the cell type hierarchy as reference tree. We performed the following preprocessing steps on the raw data: 
+First, we excluded 5 of 45 cell types that neither have any child cell types with marker genes nor carry marker genes themselves.
+Second, we performed a post-order traversal of the reference tree to calculate missing sets of marker genes for the inner nodes of the cell type tree.
+For each inner node without marker genes, we calculate the union over all marker genes set that are direct children of the particular inner node. 
+This is in our opinion reasonable, because pathways in Reactome are always a supersets of their child pathways.
+Third, we removed 4 of 40 cell types that are cancer cells, because we are unsure if cancer cell provide stable marker genes. This filtering step leaves us with 36 out of 45 immune cell types. \todo{We may want to run experiments on these cells as well}
+Fourth, we used BioMart to translate gene symbols into \acrshort{ncbi} gene identifiers. In addition, we used BioMart and the other annotation services mentioned in \cref{sec:gs_def} to obtain data points. An illustration of the immune cell reference tree is in \cref{fig:immune_cell_tree}.
 
-\subsection{Network-based measurements}
+\begin{centeredFigure}[!h]
+	\resizebox{\textwidth}{!}{% <------ Don't forget this %
+		\begin{tikzpicture}[sibling distance=0pt]
+		\tikzset{grow'=right,level distance=80pt}
+		\tikzset{execute at begin node=\strut}
+		\tikzset{every tree node/.style={align=center,anchor=base west}}
+		\Tree[.{\underline{immune cell}}
+		   [.{\underline{lymphoid}}
+		      [.{NK cell}
+		         \text{NK cell resting}
+		         \text{NK cell activated} ]
+		      [.{T cell}
+		         \text{T cell CD8+}
+		         \text{T cell gamma delta}
+		         [.{T cell CD4+}
+		            \text{T cell regulatory (Tregs)}
+		            [.{T cell CD4+\\(non\\-regulatory)}
+		               \text{T cell CD4+ naive}
+		               \text{T cell follicular helper}
+		               [.{\underline{T cell CD4+}\\\underline{memory}}
+		                  \text{T cell CD4+ memory resting}
+		                  \text{T cell CD4+ memory activated} ] ] ] ]
+		      [.{B cell}
+		         \text{B cell naive}
+		         \text{B cell memory}
+		         \text{B cell plasma} ] ]
+		   [.{\underline{myleoid}}
+		      \text{Neutrophil}
+		      \text{Eosinophil}
+		      [.{Mast cell}
+		         \text{Mast cell resting}
+		         \text{Mast cell activated} ]
+		      [.{\underline{Monocytic} \\ \underline{lineage}}
+		         [.{Macrophage /\\Monocyte}
+		            \text{Monocyte}
+		            [.{Macrophage}
+		               \text{Macrophage M0}
+		               \text{Macrophage M1}
+		               \text{Macrophage M2} ] ]
+		         [.{Dendritic cell}
+		            \text{Dendritic cell resting}
+		            \text{Dendritic cell activated} ] ] ] ]
+		\end{tikzpicture}% <------ Don't forget this %
+	}
 
-%Studying these networks and identifying their unique functions in the cell live-cycle is a time-consuming task and involves requires laboratory techniques like gene-editing, micro fluorescence, and sequencing. 
+	\caption[Immune cell type tree used as referenc.]{Immune cell type tree used as reference. Data from Georg et al.  does not provide marker genes for the underlined cell types}
+	\label{fig:immune_cell_tree}
+\end{centeredFigure}
 
-Shortest path problem:
-Not Robust (show example)
-* k-shortest path better, but also not that Robust
-* Robust shortest path problem is NP-complete and therefore prohibited
+\section{Gene Set Metrics}
 
+Let $\mathcal{G}$ be the universe of all data points $G$ that follow the 8-tuple schema for gene sets in \cref{eq:gs_info}. We assume that all data points in $\mathcal{G}$ are organized in a rooted tree according to their biological relationship. Furthermore, let $l_{\mathcal{G}}(G_1, G_2)$ be the path length between $G_1$, $G_2 \in \mathcal{G}$ within this tree. Our goal is to find a mathematical metric~\cite{Arkhangel} $d: \mathcal{G} \times \mathcal{G}  \to [0, \infty)$ so that $d(X, Y)$ and $l_{\mathcal{G}}(X, Y)$ are statistical depended for any random variable $X$ and $Y$.
 
-Variances:
-Average over pairwise node paths violates d(x,y) = 0 <=> x=y condition
-Mean over Min of 
+Every gene set metric we present has two degrees of freedom: A projection $p : \mathcal{G} \to X$ and a distance function $D: X \times X \to [0, \infty)$ over a set $X$. The operator $D$ performs the actual statistical or algorithmic calculation where $p$ projects a data point from $G \in \mathcal{G}$ to a mathematically controlled space $X$. We use the set $\mathcal{A}  = \lbrace{N,D, ID, S,GO, GOD, GD,T \rbrace}$ to address an specific element of data point $G \in \mathcal{G}$.
 
-\subsection{Word2vec models \& measurements}
+Moreover, we will use the following nomenclature to distinguish presented metrics from each other:
+\begin{align} \label{eq:metric_def}
+	\begin{split}
+		d_{p, D} \colon \mathcal{G} \times \mathcal{G} & \to [0, \infty) \\
+		(G_1,G_2) & \mapsto D \left( t(G_1), t(G_2) \right).
+	\end{split}
+\end{align}
+\Cref{fig:metrics} shows a list of all metrics used in this work.
 
-%  NLP Word Processing:
-%* split (\s,",",(,),<br>), lowercase
-%* Worder len > 1
-%* filter stopwords
-%* filter what is not in vocabulary of trained data
+\begin{table}[!h]
+	\centering
+	\begin{tabularx}{\linewidth}{l|X}
+		\hline
+		Metric & Description \\
+		\hline
+		\multicolumn{2}{l}{Statistical metrics} \\
+		\hline
+		$\displaystyle d_{P_{ID}, D_J}$ & Jaccard distance over \acrshort{ncbi} gene identifiers $G_{ID}$\\
+		$\displaystyle d_{P_{T}, D_J}$ & Jaccard distance over gene traits $G_T$ \\
+		$\displaystyle d_{P_{ID}, D_O}$ & Overlap distance over \acrshort{ncbi} gene identifiers $G_{ID}$\\
+		$\displaystyle d_{P_{T}, D_O}$ & Overlap distance over gene traits $G_T$ \\
+		\hline
+	    $\displaystyle d_{\bin_{ID}, D_{p=1}}$ & Manhattan distance over \acrshort{ncbi} gene identifiers $G_{ID}$ \\
+	    $\displaystyle d_{\bin_{T}, D_{p=1}}$ & Manhattan distance over gene traits $G_T$ \\
+		$\displaystyle d_{\countOp_{T}, D_{p=1}}$ & Manhattan distance over gene trait counts \\
+		$\displaystyle d_{\bin_{ID}, D_{p=2}}$ & Euclidean distance over \acrshort{ncbi} gene identifiers  $G_{ID}$\\
+		$\displaystyle d_{\bin_{T}, D_{p=2}}$ & Euclidean distance over gene traits $G_T$ \\
+		$\displaystyle d_{\countOp_{T}, D_{p=2}}$ & Euclidean distance over gene trait counts \\
+		$\displaystyle d_{\bin_{ID}, D_\kappa}$ & $\kappa$ distance over \acrshort{ncbi} gene identifiers $G_{ID}$\\
+		$\displaystyle d_{\bin_{T}, D_\kappa}$ & $\kappa$ distance over gene traits $G_T$ \\
+		$\displaystyle d_{\countOp_{T}, D_C}$ & Cosine distance over gene trait counts \\
+		\hline
+		\multicolumn{2}{l}{Graph-based metrics} \\
+		\hline
+		$\displaystyle d_{GO_{BP}, D_{Wang,BMA}}$ & Wang method over \acrshort{go} terms (biological process terms) \\
+		$\displaystyle d_{GO_{CC}, D_{Wang,BMA}}$ & Wang method over \acrshort{go} terms (cellular component terms) \\
+		$\displaystyle d_{GO_{MF}, D_{Wang,BMA}}$ & Wang method over \acrshort{go} terms (molecular function terms) \\
+		$\displaystyle d_{GO_{BP}, D_{Resnik,BMA}}$ & Resnik method over \acrshort{go} terms (biological process terms) \\
+		$\displaystyle d_{GO_{CC}, D_{Resnik,BMA}}$ & Resnik method over \acrshort{go} terms (cellular component terms) \\
+		$\displaystyle d_{GO_{MF}, D_{Resnik,BMA}}$ & Resnik method over \acrshort{go} terms (molecular function terms) \\
+		\hline
+		$\displaystyle d_{P_{ID}, D_{Dijkstra,BMA}}$ & Dijkstra method over \acrshort{ncbi} gene identifiers in \acrshort{ppi} networks \\
+		$\displaystyle d_{N_{ppi}, D_J}$ & Jaccard distance over direct neighbor \acrshort{ncbi} gene identifiers in \acrshort{ppi} networks \\
+		$\displaystyle d_{N_{ppi}, D_O}$ & Overlap distance over direct neighbor \acrshort{ncbi} gene identifiers in \acrshort{ppi} networks \\
+		\hline
+		\multicolumn{2}{l}{Word embedding metrics} \\
+		\hline
+		$\displaystyle d_{\wToVSum \circ\ P_{S},D_C}$ & Cosine distance over word vectors of gene symbols $G_S$  \\
+		$\displaystyle d_{\wToVSum \circ\ P_{D}, D_C}$ & Cosine distance over word vectors of descriptions $G_D$  \\
+		$\displaystyle d_{\wToVSum \circ\ P_{GD}, D_C}$ & Cosine distance over word vectors of gene descriptions $G_{GD}$  \\
+		$\displaystyle d_{\wToVSum \circ\ GOD_{BP}, D_C}$ & Cosine distance over word vectors of \acrfull{go} terms (biological process)  \\
+		$\displaystyle d_{\wToVSum \circ\ GOD_{CC}, D_C}$ & Cosine distance over word vectors of \acrfull{go} terms (cellular components) \\
+		$\displaystyle d_{\wToVSum \circ\ GOD_{MF}, D_C}$ & Cosine distance over word vectors of \acrfull{go} terms (molecular function) \\
+		$\displaystyle d_{\wToV \circ\ P_{S}, D_{WM}}$ & Word Mover's distance over word vectors of gene symbols $G_S$  \\
+		$\displaystyle d_{\wToV \circ\ P_{D}, D_{WM}}$ & Word Mover's distance over word vectors of descriptions $G_D$  \\
+		%$\displaystyle d_{\wToV \circ\ P_{GD}, D_{WM}}$ & Word Mover's distance over word vectors of gene descriptions $G_{GD}$  \\
+		%$\displaystyle d_{\wToV \circ\ GOD_{BP}, D_{WM}}$ & Word Mover's distance over word vectors of \acrfull{go} terms (biological process)  \\
+		%$\displaystyle d_{\wToV \circ\ GOD_{CC}, D_{WM}}$ & Word Mover's distance over word vectors of \acrfull{go} terms (cellular components) \\
+		%$\displaystyle d_{\wToV \circ\ GOD_{MF}, D_{WM}}$ & Word Mover's distance over word vectors of \acrfull{go} descriptions (molecular function) \\
+		\hline
+	\end{tabularx}
+	\caption{Implemented gene sets metrics.}
+	\label{fig:metrics}
+\end{table}
 
+\subsection{Statistical metrics}
 
+We define a gene set metric as statistical metric if it does not rely on external topologies such as trees, networks or word embeddings. Moreover, we identify two subgroups of statistical methods: 1) set-based metrics (e.g., over Jaccard coefficient, and overlap coefficient) and 2) vector-space-based metrics (e.g., Minkowski distance, cosine distance, and distance based on $\kappa$ coefficient).
 
-%\section{Gene Expression Analysis}
-%
-%The most recurring task in pharmaceutical research \& early development is the gene expression analysis on a given date source. 
-%
-%\subsection{Methods for differential gene expression inferrence}
-%
-%Name | Strategy | Prefered Input Data
-%-----|------------|--------------------
-%[edgeR](http://doi.org/10.1093/bioinformatics/btp616) | Negative binomial distribution + Trimmed Mean of M values (TMM) Normalization | RNAseq
-%[DEseq](https://doi.org/10.1186/s13059-014-0550-8) | Negative binomial distribution + scaling factor normalization procedure | RNAseq
-%[limma](https://doi.org/10.1093/nar/gkv007) | Linear Modeling + voom transformation of counts (vor RNAseq) | RNAseq \& microarray
-%
-%The "rule of thumb" is to use limma for microarray data and edgeR for RNAseq data. DEseq is used to verify that a hypothesis based on edgeR results can also be derived from DEseq results (since edgeR is known to report more false positives).
-%
-%\subsection{Methods for batch-effect correction in meta-analysis}
-%
-%We use ComBat, SVA, and BioQC. Here we will probably have to compare different methods and reach a conclusion.
-%
-%\subsection{Methods for gene-set/pathway enrichment analysis}
-%
-%We use CAMERA, BioQC, and Fisher's exact test.
-%Previously we found out that CAMERA and BioQC will lead to false negatives when many genes are differentially expressed, while Fisher's exact test will not (not published). We can verify this and make a meta-method to accommodate different scenarios.
-%
-%\section{ROGER}
-%
-%\subsection{ROGER Database}
-%
-%* **Annotations**
-%* Gene Annotation (consumes biomart)
-%* GeneAnnotation: Ensemble \& NCBI gen IDs. ROGER-internal GeneIndex, Gen meta data
-%* Orthologs: Mapping between orthologous genes between different species
-%* TranscriptioAnnotation: Ensemble Transcription ID and meta data
-%* TranscriptRefSeq: NCBI Transcription ID and meta data
-%* Genesets (consumes mongodb/json \& gmt)
-%* DefaultGenesets: Available gen set data
-%* DefaultGenesetCategory: For gen set categorization
-%* DefaultGenesets2gene: Mapping of gen set data to gen annotations
-%* **Input**
-%* Datasets: Raw expression data
-%* Phenodata
-%* Designs: Relevant Feature matrix
-%* Contrasts: Contrast matrix
-%* **Methods \& Results**
-%* GSEmethods: Used Gen enrichment method (e.g. CAMERA)
-%* GSEtables: Gen enrichment results
-%* DGEmethods: Used Differential Gen Expression inference method (e.g.  edgeR, limma)
-%* DGEmodels: Used DGE model based on Desing and Cntrast information
-%* DGEtables: Results from DEG inference
-%
-%\subsection{Annotation Problems}
-%
-%* Have to support both Ensembl and NCBI IDs
-%* Ensembl has many unconsistent / deprecated data: Some Gene Symbols apper in multiple EnsembleGeneIds, 
-%* Possible fix: pick the "most accurate on" (e.g. does it have a proper chromosone? Number of Transcripts etc.)
-%
-%% ![ROGER Schema](roger/old_schema.png)
-%
-%\subsection{RESTful APIs for scientific R pipelines}
-%
-%* [rplumber](https://www.rplumber.io/)
-%* Fastest way to deploy REST services
-%* Very low-level: No load balancing, no authentication, task management, ...
-%* [OpenCPU](https://www.opencpu.org)
-%* Load balancing
-%* Lightwing WEB API basedn on JavaScript
-%* No build-in support for [long running jobs]
-%(https://github.com/opencpu/opencpu/issues/141)
-%* No build-in task management
-%* [Flask](http://flask.pocoo.org)
-%* Python equivalent to OpenCPU
-%* Established in the department
-%* Requires wapper functions between python <-> R
-%* No build-in task management
-%
-%\section{Differential Gene Expression}
-%
-%Lets assume we have a study consisting of a set of samples $D = \cbrac{A, B, C, D, E, F}$. Samples $A$ and $B$ are from macrophage cells, $C$ and $D$ are from microglia cells, and $E$ and $F$ are from monocyte cells. 
-%
-%Then we have basically two ground ways to model the experiments:
-%
-%\begin{lrbox}{\saveBoxOne}
-%	\mintinline{R}{model.matrix(~CellType)} 
-%\end{lrbox}
-%
-%\begin{lrbox}{\saveBoxTwo}
-%	\mintinline{R}{model.matrix(~0+CellType)}
-%\end{lrbox}
-%
-%\begin{lrbox}{\saveBoxThree}
-%\begin{minipage}{5cm}
-%	\[
-%		\begin{blockarray}{cccc}
-%			& \mu & \text{\rotatebox{90}{micro}} & \text{\rotatebox{90}{mono}} &  \\
-%			\begin{block}{c(ccc)}
-%				A & 1 & 0 & 0  \\
-%				B & 1 & 0 & 0  \\
-%				C & 1 & 1 & 0  \\
-%				D & 1 & 1 & 0  \\
-%				E & 1 & 0 & 1  \\
-%				F & 1 & 0 & 1  \\
-%			\end{block}
-%		\end{blockarray}
-%	\]
-%\end{minipage}
-%\end{lrbox}
-%
-%\begin{lrbox}{\saveBoxFour}
-%\begin{minipage}{5cm}
-%	\[
-%		\begin{blockarray}{cccc}
-%			& \text{\rotatebox{90}{macro}} & \text{\rotatebox{90}{micro}} & \text{\rotatebox{90}{mono}} &  \\
-%			\begin{block}{c(ccc)}
-%				A & 1 & 0 & 0  \\
-%				B & 1 & 0 & 0  \\
-%				C & 0 & 1 & 0  \\
-%				D & 0 & 1 & 0  \\
-%				E & 0 & 0 & 1  \\
-%				F & 0 & 0 & 1  \\
-%			\end{block}
-%		\end{blockarray}
-%	\]
-%\end{minipage}
-%\end{lrbox}
-%
-%\begin{lrbox}{\saveBoxFive}
-%	\begin{minipage}{5.3cm}
-%		\[ y \thicksim \mu + \beta_{\text{micro}} x_{\text{micro}} + \beta_{\text{mono}} x_{\text{mono}}\] 
-%	\end{minipage}
-%\end{lrbox}
-%
-%\begin{lrbox}{\saveBoxSix}
-%	\begin{minipage}{5.3cm}
-%		\[ \begin{split}
-%		y \thicksim \ & \beta_{\text{macro}} x_{\text{macro}} + \beta_{\text{micro}} x_{\text{micro}} \\
-%		& \beta_{\text{mono}} x_{\text{mono}}
-%		\end{split} \]
-%	\end{minipage}
-%\end{lrbox}
-%
-%\begin{lrbox}{\saveBoxSeven}
-%			\begin{minipage}{5.3cm}
-%				\[
-%					\begin{blockarray}{ccc}
-%						\begin{block}{c(cc)}
-%						\mu          & 0 & 0 \\
-%						\text{micro} & 1 & 0 \\
-%						\text{mono}  & 0 & 1 \\
-%						\end{block}
-%					\end{blockarray}
-%				\]
-%		\end{minipage}
-%\end{lrbox}
-%
-%\begin{lrbox}{\saveBoxEight}
-%	\begin{minipage}{5.3cm}
-%			\[
-%			\begin{blockarray}{cccc}
-%			\begin{block}{c(ccc)}
-%			\text{macro} & -1 & -1 & 0\\
-%			\text{micro} & 1 & 0 & -1 \\
-%			\text{mono}  & 0 & 1 & 1 \\
-%			\end{block}
-%			\end{blockarray}
-%			\]
-%	\end{minipage}
-%\end{lrbox}
-%
-%\begin{table}[ht]
-%
-%	\begin{tabularx}{\linewidth}{|lCC|}%
-%		\arrayrulecolor{black}%
-%		\hline
-%	
-%		\rowcolor{black} & \thc{1 vs Average} & \thc{1 vs 1} \\
-%	
-%		\circled{1} & \usebox{\saveBoxOne} & \usebox{\saveBoxTwo} \\
-%		\hline%
-%	
-%		\circled{2} & \usebox{\saveBoxThree} & \usebox{\saveBoxFour} \\
-%		
-%		\circled{3} & \usebox{\saveBoxFive} 
-%		& \usebox{\saveBoxSix}  \\
-%
-%		\circled{4} & \usebox{\saveBoxSeven} 
-%		& \usebox{\saveBoxEight}  \\
-%		\hline%
-%		
-%		\hline
-%	\end{tabularx}
-%
-%	\caption{Overview of example experiments} \label{fig:example_experiments}
-%\end{table}
-%
+For set-based methods, we define the trivial projection $P_A$ that selects an attribute from the data point $G$ as follows:
+\begin{align} \label{eq:trivial_projection}
+	\begin{split}
+		P_A : \mathcal{G} & \to \mathcal{P}(\Sigma^*) \\
+		G & \mapsto  G_A,
+	\end{split} \qquad A \in \mathcal{A} = \lbrace{ N,D, ID, S,GO, GOD, GD,T \rbrace}
+\end{align}
+This allows us to explicitly state which information of the gene set we want to use for defining metrics.
+We used the Jaccard index $J$ and the overlap coefficient~\cite{Vijaymeena} to define corresponding distance functions:
+\begin{align}
+	D_J(A,B) = 1-J(A,B) =\begin{dcases}
+			0 & \text{if } A=B=\emptyset \\
+			1 - \frac{\left| A \cap B \right|}{\left| A \cup B \right|}  &\text{else}.
+		\end{dcases}
+\end{align}
+\begin{align}
+	D_O(A,B) = 1- \overlap(A,B) = \begin{dcases}
+					0 & \text{if } A=B=\emptyset \\
+					1 - \frac{\left| A \cap B \right|}{\min(\left| A \right|, \left| B \right|)} &\text{else}.
+				\end{dcases}
+\end{align}
+Both distances generate values between 0 and 1, where 0 represents perfect overlap. in contrast to $D_J(A,B)$, $D_O(A,B)$ will always return 0 if one of the two arguments is a subset of the other argument.
 
+For vector-space-based gene set metrics, let $\mathcal{G}_A = \bigcup_{G_i \in \mathcal{G}} P_A(G_i)$ be the set of formal words that appear in at least one data point $G \in \mathcal{G}$ when looking at attribute $A \in \mathcal{A}$.
+We can then project $G \in \mathcal{G}$ as binary vector in $\mathbb{R}^n$, $n =  \left| \mathcal{G}_A \right| $ by the following function:
+\begin{align} \label{eq:bin}
+	\begin{split}
+		\bin_A \colon \mathcal{G} & \to \mathbb{R}^n \\
+		G^A & \mapsto x \text{ such that } x_j = \begin{cases}
+			1 \iff w_j \in P_A(G_i) \\
+			0 \qquad else
+		\end{cases}\text{for all } j \in \left\lbrace 1, \ldots,  n \right\rbrace, w_j \in\mathcal{G}^A.
+	\end{split}
+\end{align}
+For example, the $j$-th entry in $\bin_{ID}(G)$, is $1$ if the $j$-th \acrshort{ncbi} gene identifier is present in data point $G$.
+
+As mentioned in \cref{sec:gs_def}, we purposely allow duplicates for certain gene set information (i.e., \acrshort{go} terms, \acrshort{go} descriptions, and phenotype traits). 
+We therefore introduce a transformation $\countOp_A$ that assigns every data point $G \in \mathcal{G}$ to a counts vector $f \in \mathbb{R}^n$ with $n =  \left| \mathcal{G}_A \right|$: 
+\begin{align} \label{eq:count}
+	\begin{split}
+		\countOp_A \colon \mathcal{G} & \to \mathbb{R}^n \\
+		G_A & \mapsto f \text{ such that } f_j = \left| \lbrace w \in G_A: w = w_j \rbrace \right|  \text{for all } j \in \left\lbrace 1, \ldots,  n \right\rbrace, w_j \in\mathcal{G}_A.
+	\end{split}
+\end{align}
+
+The Minkowski distance~\cite{treves2006topological} describes a class of mathematical distances over $\mathbb{R}^n$, $n \in \mathbb{N}$ and is defined as
+\begin{align} \label{eq:minkowski_dist}
+	D_p(x,y) = \begin{dcases}
+		\left( \sum_{i=1}^{n} |x_i-y_i|^p\right)^{\frac{1}{p}} & \text{if } p \in [1,\infty) \\
+		\max_{i \in \lbrace 1, \ldots n \rbrace} |x_i-y_i| &\text{if } p = \infty.
+	\end{dcases} \qquad \forall x, y \in \mathbb{R}^n
+\end{align}
+The $k$-means clustering algorithm, for instance, uses the Euclidean distance ($p=2$), for measuring the error between centroids and assigned vectors.
+
+The cosine distance~\cite{Vijaymeena} is defined as
+\begin{equation} \label{eq:cosine_dist}
+	D_C(x,y)= 1- \frac{x \cdot y}{\left\| x \right\| \left\| y \right\|} \qquad \forall x, y \in \mathbb{R}^n
+\end{equation}
+where $x \cdot y$ is Euclidean dot product between $x$ and $y$. It is the preferred operator to measure the distance between word embedding vectors.
+
+The $\kappa$ coefficient $\kappa$ measures the agreement between two classifiers~\cite{Artstein:2008:IAC:1479202.1479206}. Its general form is defined as:
+\begin{align*} \label{eq:kappa}
+	\kappa = \frac{p_0-p_e}{1-p_e}, \quad p_e = \frac{1}{N^2} \sum_{k} n_{k,1} n_{k,2}, \quad \kappa \in [-1, 1]
+\end{align*}
+Where $p_0$ is the agreement between the two classifiers relative to the number of $N$ observations and $p_e$ is the probability that the two classifier agree by chance. The factors $n_{ki}$ represent the number of times where classifier $i \in \lbrace 1,2 \rbrace$ predicts category $k$.
+If the classifiers have total agreement with each other, the resulting $\kappa$ coefficient is 1.
+A $\kappa$ coefficient of 0 or below implies total disagreement or classification performance worse than random selection.
+If we interpret gene sets as binary classifiers (e.g. classifiers for gene symbols), we can utilize the $\kappa$ coefficient as distance operator for $x$, $y \in \mathbb{R}^n$:
+\begin{equation} \label{eq:kappa_dist}
+	D_\kappa(x, y)= 1-\kappa(x, y) = \frac{1-p_0(x,y)}{1-p_e(x,y)} \quad 
+	\begin{array}{l}
+		\displaystyle p_0(x,y) = \frac{c_1(x,y)+ c_0(x,y)}{n} \\
+		\displaystyle p_e(x,y) = \frac{n_0(x)n_0(y)+ n_1(x)n_1(y)}{n^2}	
+	\end{array}
+\end{equation}
+Where $n_k(v)$ is the number of entries in vector $v \in \mathbb{R}^n$ that have value $k$, and $c_k(v_1,v_2)$ the number of times where both vector $v_1$ and $v_2$ have value $k$ at position $i \in \lbrace 1, \ldots, n\rbrace$.
+
+We implemented the statistical gene set metrics by using Python software packages scikit-learn~\cite{scikit-learn} for the $\kappa$ coefficient and SciPy~\cite{scipy} for Jaccard intex, cosine similarity, and Minkowski distances.
+
+\subsection{Graph-based metrics}
+
+\newacronym{dag}{DAG}{Directed Acyclic Graphs}
+\newacronym{bma}{BMA}{Best Match Average}
+
+For graph-based gene set metrics, we require an additional data structure that models relationships between data point attributes (like \acrshort{ncbi} gene IDs $G_{ID}$) as a mathematical graph. 
+We distinguish between methods that assume a \acrfull{dag} (e.g. gene ontologies) and methods that operate on arbitrary graphs (e.g. protein-protein interaction networks).
+We incorporated the Resnik similarity~\cite{Resnik:1999:SST:3013545.3013547} and the Wang similarity~\cite{Wang:2007:NMM:1346066.1346071} as basis for the \acrshort{dag}-based distances $D_{Wang,BMA}$ and $D_{Resnik,BMA}$.
+Both Resnik and Wang propose their similarity functions for comparing the similarity between two individual \acrshort{go} terms. Furthermore, we used the Dijkstra algorithm~\cite{Cormen:2009:IAT:1614191} to measure the path lengths between two individual genes in a \acrshort{ppi} network ($D_{Dijkstra, BMA}$). For each of the three methods, we apply the \acrfull{bma} strategy~\cite{Pesquita} to combine the results of pairwise comparison. Moreover, we define projections for \acrshort{go} information that filters terms based on their category (e.g., $GO_{BP}$ for selected only terms that describe a biological process). Finally, the $N_{ppi}$ projection extends a set of \acrshort{ncbi} gene identifiers by its direct neighbors in the \acrshort{ppi} network.
+
+Let $DAG_{GO} = (L_{GO}, E_{GO})$ be the \acrshort{dag} over all \acrshort{go} terms $L_{GO}$ where $E_{GO}$ represents the \acrshort{go} term relationships as tuple.
+Furthermore, let $C_t$ be the set that contains all descendant terms of \acrshort{go} term $t \in L_{GO}$ and $t$ itself. 
+The Resnik similarity is then defined as
+\begin{align*}
+	\begin{split}
+		\simOp_{Resnik} : L_{GO} \times L_{GO} & \to[0,1]\\
+		(t_1, t_2) & \mapsto IC(LCA(t_1, t_2)),
+	\end{split} 
+	\quad IC(t) = - \log \left(  \frac{|C_t|}{|L_{GO}|} \right),
+\end{align*}
+where $LCA(t_1,t_2)$ is the lowest common ancestors of the \acrshort{go} terms $t_1$, $t_2$. 
+The function $IC(t)$ describes the information content of term $t$ relative to the entire ontology. 
+Two \acrshort{go} terms are similar in the context of Resnik similarity, if their lowest common ancestor selects a relatively small portion of the gene ontology. We define the corresponding Resnik distance as $D_{Resnik}(t) = 1- \simOp_{Resnik}(t)$ for every \acrfull{go} term $t$.
+
+For the Wang similarity, let $T_t$ be the set that includes all ancestors of $t$ and $t$ itself. The following function then calculates the Wang similarity
+\begin{align*}
+	\begin{split}
+		\simOp_{Wang} : L_{GO} \times L_{GO} & \to[0,1]\\
+		(t_1, t_2) & \mapsto \frac{\displaystyle \sum_{t\in T_{t_1} \cap T_{t_2}} \left(S_{t_1}(t)+ S_{t_2}(t) \right) }{SV(t_1)+SV(t_2)},
+	\end{split}.
+\end{align*} 
+Where $S_t(t')$ is the semantic contribution of $t'$ to the ancestor $t$ and $SA(t)$ the sum of all semantic contributions over all ancestors of $t$:
+\begin{align*}
+	S_t(t') & = \begin{dcases}
+			1   & \text{if } t' = t \\
+			\max \lbrace w_e \cdot S_t(c)\colon c \text{ is children of } t' \rbrace & \text{else}
+	\end{dcases}, \quad SV(t) = \sum_{t' \in T_t} S_t(t'),
+\end{align*}
+The factor $w_e$ is called semantic contribution of edge $e$ in $E_{GO}$. Wang suggest to assign constant values to semantic contribution factors based on the relation type of the edges (e.g., ``is-a'', ``regulates'', \ldots).
+We define the corresponding Wang distance as $D_{Wang}(t) = 1- \simOp_{Wang}(t)$ for every \acrfull{go} term $t$.
+
+The comparison of two (multi)sets of \acrshort{go} terms requires an additional combination strategy. 
+Let $GO_1$, $GO_2$ be subsets of $ L_{GO}$ and $D_f$ a distance function for individual terms (e.g. $D_{Resnik}, D_{Wang}$). 
+The  \acrshort{bma} strategy then calculates the distance between two \acrfull{go} term multisets by the following expression:
+\begin{align*}
+		D_{f,BMA}(GO_1, GO_2) & =  \frac{\displaystyle \sum_{t_1\in GO_1} \min_{t_2 \in GO_2} D_f(t_1,t_2) +  \sum_{t_2 \in GO_2} \min_{t_1 \in GO_1} D_f(t_1,t_2)}{|GO_1| + |GO_2|}.
+\end{align*}
+The function $D_{Wang,BMA}$, for instance, computes the Wang distance over two sets of terms by using the \acrshort{bma} combination strategy. An important property of the \acrshort{bma} strategy is that the identity-of-indiscernibles property for distances functions holds if $D_f$ is a distance function (i.e., $d(x,y) = 0 \iff x=y$). 
+
+Moreover, one can generalize the \acrshort{bma} strategy for an arbitrary distance function $D_f$ that operates on elements from an arbitrary set. 
+We use the \acrshort{bma} strategy in combination with the Dijkstra algorithm to define a gene set metric over \acrshort{ppi} networks ($D_{Dijkstra,BMA}$). 
+The Dijkstra algorithm uses a greedy approach to find the shortest path between two nodes. 
+In the context of \acrshort{ppi} networks, the input nodes resemble \acrshort{ncbi} gene identifiers from a data point $G$.
+
+Next, we define projections for extracting \acrfull{go} terms from data points of a certain category.
+The tree \acrfull{go} categories are ``Biological Process'' (BP), ``Cellular Component'' (CC), and ``Molecular Function'' (MF), wich also represent the tree root terms for all other \acrshort{go} terms.
+We use $L_{GO_{BF}}$, $L_{GO_{CC}}$, $L_{GO_{MF}}$ to differentiate between \acrshort{go} term of different categories, i.e. $L_{GO_{BF}} \cup L_{GO_{BF}} \cup L_{GO_{BF}} = L_{GO}$. We do this analogously for \acrshort{go} term descriptions $L_{GOD_{BF}}$, $L_{GOD_{BF}}$, and $L_{GOD_{BF}}$.
+Furthermore, we define projections for ontology terms $GO_X$  and ontology term descriptions $GOD_X$ as:
+\begin{align} \label{eq:ontology_projection}
+	\begin{split}
+		GO_X : \mathcal{G} & \to \mathcal{P}(L_{GO_X}) \\
+		G & \mapsto P_{GO}(G) \cap L_{GO_X},
+	\end{split} \qquad X \in \lbrace{ BP, MF, CC \rbrace}
+\end{align}
+\begin{align} \label{eq:ontology_desc_projection}
+	\begin{split}
+		GOD_X : \mathcal{G} & \to \mathcal{P}(L_{GOD_X}) \\
+		G & \mapsto P_{GOD}(G) \cap L_{GOD_X},
+	\end{split} \qquad X \in \lbrace{ BP, MF, CC \rbrace}
+\end{align}
+This separation is necessary, because we want to see how important the \acrshort{go} category is during the distance evaluation phase. In addition, the Resnik method does not support comparison with mixes \acrshort{go} terms.
+
+Finally, we define the $N_{ppi}$ projection as 
+\begin{align} \label{eq:ppi_neighbours}
+	\begin{split}
+		N_{ppi} : \mathcal{G} & \to \mathcal{P}(L_{NCBI}) \\
+		G & \mapsto P_{ID}(G) \cup \{g' \in L_{NCBI}\ |\ \exists g \in P_{ID}(G) : \{g, g'\} \in E_{PPI} \},
+	\end{split}
+\end{align}
+where $E_{PPI}$ contains the edges of a given \acrshort{ppi} network.
+
+The tab-delimited data we used for the \acrshort{ppi} network originate from the BioGRID~\cite{doi:10.1093/nar/gkw1102} homepage. We extracted the edges as tuple of \acrshort{ncbi} identifiers from each row and filtered edges that did not originate from homo sapiens. We used an implementation of the Dijkstra algorithm provided by the SciPy package as base for the Dijkstra distance function. The R package GOSemSim~\cite{doi:10.1093/bioinformatics/btq064} offered the implementations for the Resnik similarity and the Wang similarity. In addition, we used the R data package org.Hs.eg.db~\cite{goAnno}, which includes the relationships between \acrshort{go} terms for the human species. 
+
+\subsection{Word embedding metrics}
+
+The two crucial parts of the presented word embedding metrics are 1) the embedding model and 2) the functions to project gene set information into the word2vec vector space.
+Additionally, we included the \acrshort{wmd} as specialized mathematical distance for the word embedding vector spaces.
+
+For explaining the Word2vec model and the projection function, we need to clarify the difference between formal words and natural language words. 
+A formal word is an element of a formal language  $L \subset \Sigma^*$ over an alphabet $\Sigma$ and can contain every character. On the contrary, a word in the context of natural language consists only of printable characters. We use the term ``vocable'' to distinguish formal words from natural language words.
+In a trained Word2vec model $M \in \mathbb{R}^{v \times d}$, we represent every vocable by a $d$-dimensional row vector in $M$ where $v$ is the size of the model vocabulary.
+Our reference Word2vec model is a pretrained model provided by Wilbur et al.~\cite{KIM2017122}. 
+They extracted over 25 million titles and abstracts from publications in PubMed (until March 2016). 
+\todo{Link to dataset?} 
+%https://www.ncbi.nlm.nih.gov/CBBresearch/Wilbur/IRET/DATASET/
+Wilbur et al. trained the model with the skip-gram variant of the Word2vec learning method.
+
+As mentioned in the previous section, we cannot project formal words directly into the word vector space.
+It is therefore necessary to extract usable vocables from formal words / arbitrary text. 
+For our evaluation, we conducted the following steps for each formal word:
+First, we replace every upper case character by a lower case character. This is necessary because our reference model is only trained for lower case vocables.
+Second, we split each formal word by any kind of word divider (dot, coma, colon, semicolon, whitespace, tabulator, slash, hyphen, brackets) and obtain a list of vocables.
+Third, we remove numbers and out-of-vocabulary elements from the split list.
+Finally, we remove stopwords based on the English language. Stopwords represent a set of frequently used vocables in a language that don't add significant value to a list of vocables (e.g. ``the'' or ``of'' in the English language).
+
+With this preprocessing steps in mind, we define the transformation of an arbitrary subset of a formal language into a (mult)iset of vocables:
+\begin{equation*}
+		\wToV :  \mathcal{P}(\Sigma^*) \to \mathcal{P}(\Sigma^*), \quad W \mapsto \bigcup_{w \in W}  \textToVocs(w),
+\end{equation*}
+where $\textToVocs$ performs the previously mentioned preprocessing steps for each formal word. 
+Furthermore, we define
+\begin{equation*}
+		\wToVSum :  \mathcal{P}(\Sigma^*) \to \mathbb{R}^d, \quad W \mapsto \sum_{v \in  \wToV(W)} \vecOp(v) ,
+\end{equation*}
+as sum of all vocables extracted for a given set of formal words. The expression $\vecOp(v)$ returns the vector representation of the vocable $v$. 
+The $\wToVSum$ allows us to build projections from gene set date points into word embedding as composition with other projection function. 
+For instance, we use the composition $\wToVSum \circ P_{S}$ to denote the transformation of gene symbols into word vectors. Note that Word2vec generally ignores the order of words, which makes it unnecessary to preserve the order of vocables from the input set.
+
+Existing mathematical distance functions over $\mathbb{R}^d$, like the cosine distance $D_C$, are suitable for building gene set metrics. Alternatively, we can use functions like the \acrfull{wmd}~ \cite{Kusner:2015:WED:3045118.3045221}, which are more suited for document-based queries. 
+In the context of \acrshort{wmd}, we use the term ``document'' as synonym for (multi)sets of words. 
+The \acrshort{wmd} distance takes two documents and calculates the document distances based on the optimal pairwise pairing of vocables (see \cref{fig:wmd}).
+\begin{centeredFigure}[!h]
+	\includegraphics{figures/materials/wmd.pdf}
+	\caption{Illustration of WMD distance of two documents~\cite{Kusner:2015:WED:3045118.3045221}}
+	\label{fig:wmd}
+\end{centeredFigure}
+\todo{Expand description?}
+
+We implemented the word-embedding-based gene set metrics by using the Python packages Gensim~\cite{rehurek_lrec} and NLTK~\cite{Loper:2002:NNL:1118108.1118117}. Gensim is a widely used software package for training Word2vec models, performing common Word embedding operations, and performing document queries with \acrshort{wmd}. The NLTK package offers utility functions for downloading English stopwords.
+
+% Signal Transduction 3000
 
 %% ==============================
 \chapter{Results \& Discussion}
 \label{ch:results}
 %% ==============================
 
+We evaluate all presented gene set metrics by assessing the correlation of pairwise distance values with pairwise path lengths per gene set data point.
+
+\todo{What is the most astonishing fact?}
+
 \section{Ground-truth comparison}
 
+For each reference data
+Calculate distance-matrix containing all reference tree path lengts
+
+
+For each reference data
+For each metric
+Calculate distance-matrix containing gene set metric results
+
+For each reference data
+Calculate pearson correlation and spearman correlation.
+Pearson tests for linear dependence
+Spearman tests for monotony 
+
+\begin{centeredFigure}[!h]
+\resizebox{\textwidth}{!}{% <------ Don't forget this %
+	\includegraphics{figures/results/plots/summary/pearson.pdf}% <------ Don't forget this %
+	}
+	\caption{Illustration of WMD distance of two documents}
+	\label{fig:pearson}
+\end{centeredFigure}
+
+\begin{centeredFigure}[!h]
+\resizebox{\textwidth}{!}{% <------ Don't forget this %
+	\includegraphics{figures/results/plots/summary/spearman.pdf}% <------ Don't forget this %
+	}
+	\caption{Illustration of WMD distance of two documents}
+	\label{fig:spearman}
+\end{centeredFigure}
+
+\section{Differences between pathway and marker gene sets}
+
+Interesting findung: Immune cell are a good negative example, Explanainion for goot performanc eof marker gene: Pathway genes are not activated all the time, where marker genes are activated every time and thouse an intersaction is more appropriate
+
 \section{Limitations}
+
+%Shortest path problem:
+%Not Robust (show example)
+%* k-shortest path better, but also not that Robust
+%* Robust shortest path problem is NP-complete and therefore prohibited
+
+
+% Use other W2V Models
+% Use document space based models instead of word space based once
+
+
+% We use shortest path PPI as undirected graph, which si might wring
+% Shortest path is maybe not robust
+
+% We implemented a Python package that provides \todo{MISSING} gene set metric implementations.
 
 %% ==================
 \chapter{Conclusion}
@@ -761,6 +1055,10 @@ Mean over Min of
 %Now the most important part, draw conclusions based on your analysis. Did your proposed solution work? What are the strong points? What are the limitations?
 
 %Significant issues identified in the thesis, or still outstanding after the thesis, should be describe as future work.
+
+
+
+%We automated these preprocessing steps by using the workflow engine Snakemake~\cite{doi:10.1093/bioinformatics/bts480}. \Cref{fig:reactome_trees} lists all downloaded and preprocessed Reactome subtrees.
 
 %% ----------------
 %% |   Appendix   |
@@ -775,22 +1073,116 @@ Mean over Min of
 \label{ch:appendix}
 %% ==============================
 
+\section{Additional figures}
+
+\begin{centeredFigure}[!h]
+\resizebox{\textwidth}{!}{% <------ Don't forget this %
+	\includegraphics{figures/results/plots/summary/times.pdf}% <------ Don't forget this %
+	}
+	\caption{Execution time per metric and per entire reference data}
+	\label{fig:times}
+\end{centeredFigure}
+
+\newpage
+
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
+\begin{landscape}
+\begin{centeredFigure}[!h]
+	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-373755/pearson.pdf}
+	\caption{Pearson correlation summary over Reactome dataset R-HSA-373755}
+\end{centeredFigure}
+\end{landscape}
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}
+
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
+\begin{landscape}
+\begin{centeredFigure}[!h]
+	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-373755/spearman.pdf}
+	\caption{Spearman correlation summary over Reactome dataset R-HSA-373755}
+\end{centeredFigure}
+\end{landscape}
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}
+
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
+\begin{landscape}
+\begin{centeredFigure}[!h]
+	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-1474290/pearson.pdf}
+	\caption{Pearson correlation summary over Reactome dataset R-HSA-1474290}
+\end{centeredFigure}
+\end{landscape}
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}
+
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
+\begin{landscape}
+\begin{centeredFigure}[!h]
+	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-1474290/spearman.pdf}
+	\caption{Spearman correlation summary over Reactome dataset R-HSA-1474290}
+\end{centeredFigure}
+\end{landscape}
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}
+
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
+\begin{landscape}
+\begin{centeredFigure}[!h]
+	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-8982491/pearson.pdf}
+	\caption{Pearson correlation summary over Reactome dataset R-HSA-8982491}
+\end{centeredFigure}
+\end{landscape}
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}
+
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
+\begin{landscape}
+\begin{centeredFigure}[!h]
+	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-8982491/spearman.pdf}
+	\caption{Spearman correlation summary over Reactome dataset R-HSA-8982491}
+\end{centeredFigure}
+\end{landscape}
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}
+
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
+\begin{landscape}
+\begin{centeredFigure}[!h]
+	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-422475/pearson.pdf}
+	\caption{Pearson correlation summary over Reactome dataset R-HSA-422475}
+\end{centeredFigure}
+\end{landscape}
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}
+
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
+\begin{landscape}
+\begin{centeredFigure}[!h]
+	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-422475/spearman.pdf}
+	\caption{Spearman correlation summary over Reactome dataset R-HSA-422475}
+\end{centeredFigure}
+\end{landscape}
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}
+
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
+\begin{landscape}
+\begin{centeredFigure}[!h]
+	\includegraphics[scale=0.6]{figures/results/plots/full/immune_only/pearson.pdf}
+	\caption{Pearson correlation summary over the immune cell reference tree}
+\end{centeredFigure}
+\end{landscape}
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}
+
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
+\begin{landscape}
+\begin{centeredFigure}[!h]
+	\includegraphics[scale=0.6]{figures/results/plots/full/immune_only/spearman.pdf}
+	\caption{Spearman correlation summary over the immune cell reference tree}
+\end{centeredFigure}
+\end{landscape}
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}
 
 \section{ROGER - Roche Omnibus of Gene Expression Regulation} \label{sec:roger}
-
-\subsection{State of the art}
-
-\subsubsection{Transcriptomic data management}
-
-\subsubsection{Differential Gene Expression Analysis}
-
-\subsubsection{Gene Set Enrichment Analysis}
-
-\subsection{Reimplementation}
-
-\subsubsection{Data structures \& architecture}
-
-\subsubsection{Visualizations \& data access}
+%\subsection{State of the art}
+%\subsubsection{Transcriptomic data management}
+%\subsubsection{Differential Gene Expression Analysis}
+%\subsubsection{Gene Set Enrichment Analysis}
+%\subsection{Reimplementation}
+%\subsubsection{Data structures \& architecture}
+%\subsubsection{Visualizations \& data access}
  
 \newpage 
 
@@ -814,13 +1206,17 @@ Mean over Min of
 %% --------------------
 
 \cleardoublepage
-\phantomsection
-\addcontentsline{toc}{chapter}{\bibname}
 
 \iflanguage{english}
 {\bibliographystyle{alpha}}
 {\bibliographystyle{babalpha-fl}} % german style
 
+\begingroup
+\renewcommand{\chapter}[2]{}%
+%\renewcommand{\chapter}[2]{}% for other classes
+\section{References}
 \bibliography{references}
+\endgroup
+
 
 \end{document}
