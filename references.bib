@@ -439,20 +439,48 @@
 }
 
 @inproceedings{Loper:2002:NNL:1118108.1118117,
- author = {Loper, Edward and Bird, Steven},
- title = {NLTK: The Natural Language Toolkit},
- booktitle = {Proceedings of the ACL-02 Workshop on Effective Tools and Methodologies for Teaching Natural Language Processing and Computational Linguistics - Volume 1},
- series = {ETMTNLP '02},
- year = {2002},
- location = {Philadelphia, Pennsylvania},
- pages = {63--70},
- numpages = {8},
- url = {https://doi.org/10.3115/1118108.1118117},
- doi = {10.3115/1118108.1118117},
- acmid = {1118117},
- publisher = {Association for Computational Linguistics},
- address = {Stroudsburg, PA, USA},
+ 	author = {Loper, Edward and Bird, Steven},
+ 	title = {NLTK: The Natural Language Toolkit},
+ 	booktitle = {Proceedings of the ACL-02 Workshop on Effective Tools and Methodologies for Teaching Natural Language Processing and Computational Linguistics - Volume 1},
+ 	series = {ETMTNLP '02},
+ 	year = {2002},
+ 	location = {Philadelphia, Pennsylvania},
+ 	pages = {63--70},
+ 	numpages = {8},
+ 	url = {https://doi.org/10.3115/1118108.1118117},
+ 	doi = {10.3115/1118108.1118117},
+ 	acmid = {1118117},
+ 	publisher = {Association for Computational Linguistics},
+ 	address = {Stroudsburg, PA, USA},
 } 
+
+@article{KIM2017122,
+	title = "Bridging the gap: Incorporating a semantic similarity measure for effectively mapping PubMed queries to documents",
+	journal = "Journal of Biomedical Informatics",
+	volume = "75",
+	pages = "122 - 127",
+	year = "2017",
+	issn = "1532-0464",
+	doi = "https://doi.org/10.1016/j.jbi.2017.09.014",
+	url = "http://www.sciencedirect.com/science/article/pii/S1532046417302186",
+	author = "Sun Kim and Nicolas Fiorini and W. John Wilbur and Zhiyong Lu",
+	keywords = "PubMed literature search, Semantic similarity, Word Mover’s Distance, Word embeddings, Learning to rank",
+	abstract = "The main approach of traditional information retrieval (IR) is to examine how many words from a query appear in a document. A drawback of this approach, however, is that it may fail to detect relevant documents where no or only few words from a query are found. The semantic analysis methods such as LSA (latent semantic analysis) and LDA (latent Dirichlet allocation) have been proposed to address the issue, but their performance is not superior compared to common IR approaches. Here we present a query-document similarity measure motivated by the Word Mover’s Distance. Unlike other similarity measures, the proposed method relies on neural word embeddings to compute the distance between words. This process helps identify related words when no direct matches are found between a query and a document. Our method is efficient and straightforward to implement. The experimental results on TREC Genomics data show that our approach outperforms the BM25 ranking function by an average of 12% in mean average precision. Furthermore, for a real-world dataset collected from the PubMed® search logs, we combine the semantic measure with BM25 using a learning to rank method, which leads to improved ranking scores by up to 25%. This experiment demonstrates that the proposed approach and BM25 nicely complement each other and together produce superior performance."
+}
+
+@article{YU1998457,
+	title = "On the Robust Shortest Path Problem",
+	journal = "Computers \& Operations Research",
+	volume = "25",
+	number = "6",
+	pages = "457 - 468",
+	year = "1998",
+	issn = "0305-0548",
+	doi = "https://doi.org/10.1016/S0305-0548(97)00085-3",
+	url = "http://www.sciencedirect.com/science/article/pii/S0305054897000853",
+	author = "Gang Yu and Jian Yang",
+	abstract = "The shortest path problem is of great importance to the real world in such areas as transportation, network design, telecommunication, etc. The deterministic version of the problem is easily solved. However, in the real world, uncertainty is frequently encountered and must be dealt with. For instance, in a transportation network, the path that has the least travel time when no traffic is present might be prone to accidents and traffic jams, and thus it may lead to a drastic increase in travel time during rush hours. In situations with significant uncertainty, the deterministic approach can be far from sufficient. New and appropriate criteria and models to handle uncertainties along with efficient solution techniques are in need. In this paper, we take a minimax approach to measure the performance under uncertainties. Under our measure, one path is superior to all others only if its worst case performance is better than that of the others. The complexity of the defined models, exact and heuristic solution methods are explored and presented. Analysis is done to examine the performance of the heuristic method. The shortest path (SP) problem in a network with nonnegative arc lengths can be solved easily by Dijkstra's labeling algorithm in polynomial time. In the case of significant uncertainty of the arc lengths, a robustness approach is more appropriate. In this paper, we study the SP problem under arc length uncertainties. A scenario approach is adopted to characterize uncertainties. Two robustness criteria are specified: the absolute robust criterion and the robust deviation criterion. We show that under both criteria the robust SP problem is NP-complete even for the much more restricted layered networks of width 2, and with only 2 scenarios. A pseudo-polynomial algorithm is devised to solve the robust SP problem in general networks under bounded number of scenarios. Also presented is a more efficient algorithm for layered networks. However, in the case of unlimited number of scenarios, we show that the robust SP problem is strongly NP-hard. A simple heuristic for finding a good robust shortest path is provided, and the worst case performance is analyzed."
+}
 
 %%%%%%%%%
 % books
@@ -528,16 +556,48 @@
 	publisher = {The MIT Press},
 }
 
-@article{KIM2017122,
-title = "Bridging the gap: Incorporating a semantic similarity measure for effectively mapping PubMed queries to documents",
-journal = "Journal of Biomedical Informatics",
-volume = "75",
-pages = "122 - 127",
-year = "2017",
-issn = "1532-0464",
-doi = "https://doi.org/10.1016/j.jbi.2017.09.014",
-url = "http://www.sciencedirect.com/science/article/pii/S1532046417302186",
-author = "Sun Kim and Nicolas Fiorini and W. John Wilbur and Zhiyong Lu",
-keywords = "PubMed literature search, Semantic similarity, Word Mover’s Distance, Word embeddings, Learning to rank",
-abstract = "The main approach of traditional information retrieval (IR) is to examine how many words from a query appear in a document. A drawback of this approach, however, is that it may fail to detect relevant documents where no or only few words from a query are found. The semantic analysis methods such as LSA (latent semantic analysis) and LDA (latent Dirichlet allocation) have been proposed to address the issue, but their performance is not superior compared to common IR approaches. Here we present a query-document similarity measure motivated by the Word Mover’s Distance. Unlike other similarity measures, the proposed method relies on neural word embeddings to compute the distance between words. This process helps identify related words when no direct matches are found between a query and a document. Our method is efficient and straightforward to implement. The experimental results on TREC Genomics data show that our approach outperforms the BM25 ranking function by an average of 12% in mean average precision. Furthermore, for a real-world dataset collected from the PubMed® search logs, we combine the semantic measure with BM25 using a learning to rank method, which leads to improved ranking scores by up to 25%. This experiment demonstrates that the proposed approach and BM25 nicely complement each other and together produce superior performance."
+@inbook{doi:10.1002/9781119454205.ch10,
+    author = {Kathleen F., Weaver and Vanessa, Morales and Sarah L., Dunn and Kanya, Godde and Pablo F., Weaver},
+	publisher = {John Wiley \& Sons, Ltd},
+	isbn = {9781119454205},
+	title = {Pearson's and Spearman's Correlation},
+	booktitle = {An Introduction to Statistical Analysis in Research},
+	chapter = {10},
+	pages = {435-471},
+	doi = {10.1002/9781119454205.ch10},
+	url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119454205.ch10},
+	eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/9781119454205.ch10},
+	year = {2017},
+	keywords = {correlation analysis, Pearson's correlation, Spearman's rank-order correlation, statistical analysis, statistical programs},
+	abstract = {Abstract A correlation analysis provides a quantifiable value and direction for the relationship between the two variables, but the output generated cannot determine cause and effect. The two commonly used correlation analyses are Pearson's correlation (parametric) and Spearman's rank-order correlation (nonparametric). The Pearson and Spearman analyses provide the researcher with a p-value (i.e., significance level) and an r-or p-value (i.e., strength of the relationship). This chapter discusses the assumptions of the correlation analysis in more depth. The following assumptions must be satisfied in order to run Pearson's and Spearman's correlation: data type; distribution of data; and random sampling. The chapter further compares Pearson's and Spearman's tests. Statistical programs are used to run a correlation analysis to determine a significant relationship (p-value) and the strength of the relationship (r, ρ).}
+}
+
+@article{doi:10.1093/bioinformatics/btg015,
+	author = {Hucka, M. and and the rest of the SBML Forum: and Finney, A. and and the rest of the SBML Forum: and Sauro, H. M. and and the rest of the SBML Forum: and Bolouri, H. and and the rest of the SBML Forum: and Doyle, J. C. and and the rest of the SBML Forum: and Kitano, H. and and the rest of the SBML Forum: and Arkin, A. P. and and the rest of the SBML Forum: and Bornstein, B. J. and and the rest of the SBML Forum: and Bray, D. and and the rest of the SBML Forum: and Cornish-Bowden, A. and and the rest of the SBML Forum: and Cuellar, A. A. and and the rest of the SBML Forum: and Dronov, S. and and the rest of the SBML Forum: and Gilles, E. D. and and the rest of the SBML Forum: and Ginkel, M. and and the rest of the SBML Forum: and Gor, V. and and the rest of the SBML Forum: and Goryanin, I. I. and and the rest of the SBML Forum: and Hedley, W. J. and and the rest of the SBML Forum: and Hodgman, T. C. and and the rest of the SBML Forum: and Hofmeyr, J.-H. and and the rest of the SBML Forum: and Hunter, P. J. and and the rest of the SBML Forum: and Juty, N. S. and and the rest of the SBML Forum: and Kasberger, J. L. and and the rest of the SBML Forum: and Kremling, A. and and the rest of the SBML Forum: and Kummer, U. and and the rest of the SBML Forum: and Le Novère, N. and and the rest of the SBML Forum: and Loew, L. M. and and the rest of the SBML Forum: and Lucio, D. and and the rest of the SBML Forum: and Mendes, P. and and the rest of the SBML Forum: and Minch, E. and and the rest of the SBML Forum: and Mjolsness, E. D. and and the rest of the SBML Forum: and Nakayama, Y. and and the rest of the SBML Forum: and Nelson, M. R. and and the rest of the SBML Forum: and Nielsen, P. F. and and the rest of the SBML Forum: and Sakurada, T. and and the rest of the SBML Forum: and Schaff, J. C. and and the rest of the SBML Forum: and Shapiro, B. E. and and the rest of the SBML Forum: and Shimizu, T. S. and and the rest of the SBML Forum: and Spence, H. D. and and the rest of the SBML Forum: and Stelling, J. and and the rest of the SBML Forum: and Takahashi, K. and and the rest of the SBML Forum: and Tomita, M. and and the rest of the SBML Forum: and Wagner, J. and and the rest of the SBML Forum: and Wang, J. and and the rest of the SBML Forum:},
+	title = {The systems biology markup language (SBML): a medium for
+representation and exchange of biochemical network models},
+	journal = {Bioinformatics},
+	volume = {19},
+	number = {4},
+	pages = {524-531},
+	year = {2003},
+	doi = {10.1093/bioinformatics/btg015},
+	URL = {http://dx.doi.org/10.1093/bioinformatics/btg015},
+	eprint = {/oup/backfile/content_public/journal/bioinformatics/19/4/10.1093/bioinformatics/btg015/2/btg015.pdf}
+}
+
+@Inbook{Bininda-Emonds2004,
+	author="Bininda-Emonds, Olaf R. P. and Jones, Kate E. and Price, Samantha A. and Cardillo, Marcel and Grenyer, Richard and Purvis, Andy",
+	editor="Bininda-Emonds, Olaf R. P.",
+	title="Garbage in, Garbage out",
+	bookTitle="Phylogenetic Supertrees: Combining information to reveal the Tree of Life",
+	year="2004",
+	chapter="12",
+	publisher="Springer Netherlands",
+	address="Dordrecht",
+	pages="267--280",
+	abstract="As in conventional phylogenetic analyses, issues surrounding the source data are paramount in the supertree construction, but have received insufficient attention. In supertree construction, however, the source data represent phylogenetic trees rather than primary character data. This presents several supertree-specific problems. In this paper, we examine several key data issues for supertree construction, including data set non-independence, taxonomy of terminal taxa, and the question of what constitutes a valid source tree. Throughout, we present our suggested protocol for source tree collection and manipulation based on our experiences in building a supertree of mammals. Other protocols and decisions are naturally possible. What is important is that all collection protocols are presented explicitly and address minimally the issues that we have identified.",
+	isbn="978-1-4020-2330-9",
+	doi="10.1007/978-1-4020-2330-9_13",
+	url="https://doi.org/10.1007/978-1-4020-2330-9_13"
 }

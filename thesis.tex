@@ -28,8 +28,10 @@
 \usepackage{environ}
 \usepackage{tabularx}
 \usepackage{tikz}
+\usepackage{pgf}
 \usepackage{tikz-qtree}
 \usepackage[acronym,nomain]{glossaries}
+
 
 %% ---------------------------------
 %% | Information about the thesis  |
@@ -333,7 +335,7 @@ And finally, we will draw a final conclusion about our conducted experiments and
 
 Gene set enrichment is the bread and butter of every bioinformatician who tries to discover the genetic reason for phenotypic differences between cell lines. The basic process involves a series of wet and dry lab operations (\cref{fig:gene_expression_analysiss}).
 
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\resizebox{\textwidth}{!}{% <------ Don't forget this %
 		\begin{tikzpicture}
 			\node[inner sep=0pt] (monocyte1) at (0,0) {
@@ -464,7 +466,7 @@ It is important to note the entire process relies on the existence of feature an
 
 We can describe every reaction inside or outside a cell as network of protein interactions with organic chemicals, \acrshort{rna}, \acrshort{dna}, or other proteins. \Cref{fig:pathway} illustrates an excerpt of such an interaction network during the mitotic cell cycle.
 
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics[scale=0.8]{figures/introduction/pathway.pdf}
 	\caption[Expert of the mitotic cell cycle.]{Expert of the mitotic cell cycle.  The rectangular boxes and boxes with octagon shape represent proteins. The green nodes represent other organic compounds. The entire pathway involves over different 400 proteins}
 	\label{fig:pathway}
@@ -478,7 +480,7 @@ Public databases like BioGRID~\cite{doi:10.1093/nar/gkw1102} offer a collection 
 
 The \acrfull{go} maintained by the gene ontology consortium~\cite{Ashburner2000,doi:10.1093/nar/gkw1108} is a collection fo controlled vocabulary (aka. \acrshort{go} terms). Every term has is unique identifier (e.g. GO:0030234) and is associated in one of three categories: 1) biological process (e.g. wound healing, epithelial cell proliferation), 2) cellular component (cytoplasm, organelle part), and 3) molecular function (e.g. catalytic activity, enzyme regulator activity). 
 
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics[scale=0.4]{figures/introduction/go.png}
 	\caption{Excerpt of the gene ontology}
 	\label{fig:go}
@@ -515,7 +517,7 @@ According to Wilbur et al. \cite{KIM2017122}, publication databases like PubMed 
 Word embeddings are a class of machine learning models that learn feature vectors from a large set of arbitrary text (aka. text corpus). These feature vectors can be used to project words in a vector space while preserving their semantic similarities. For instance, assume two genes which are part of the same pathway. Then it is likely that the name of the genes appear relatively close to each other in multiple publication. Word embeddings reflect the text distances between the gene names to the feature vector space. Mature examples of world embedding are word2vec techniques, which use feedforward neural as supervised learning method networks~\cite{journals/corr/abs-1301-3781}. 
 %\Cref{fig:w2v} shows the two variants of the word2vec model. 
 
-%\begin{centeredFigure}[!h]
+%\begin{centeredFigure}[!ht]
 %	\includegraphics{figures/introduction/word2vec.pdf}
 %	\caption{The two variants of the word2vec learning method \cite{journals/corr/abs-1301-3781}}
 %	\label{fig:w2v}
@@ -565,7 +567,7 @@ Each data point consists of the gene set name $G_N$, a gene set description $G_{
 We allow duplication in the multiset elements, because frequency in which formal words appear in data points could influence the similarity between gene sets. 
 For instance, data point $G_1$ and $G_2$ can share the same set of \acrshort{go} terms but the number in which each \acrshort{go} terms appear in each data point can still be a differentiating factor.
 
-\begin{table}[!h]
+\begin{table}[!ht]
 	\begin{tabularx}{\linewidth}{c|l|X}
 		Symbol & Source & Summary \\
 		\hline
@@ -615,15 +617,15 @@ We, however, filtered genes from a pathway if their associated UniProt ID has no
 Third, we removed all ancestor pathways that appear more then once within the reference tree. 
 Fourth, we used web services from BioMart, \acrshort{ncbi}, and the data source from \acrfull{gwas} to annotate every gene set with gene descriptions, \acrshort{go} information, and phenotype traits.
 
-\begin{table}[!h]
+\begin{table}[!ht]
 	\centering
-	\begin{tabular}{l|r|r}
-		Reactome ID & No. used gene sets & No. removed gene sets \\
+	\begin{tabular}{l|r|r|r}
+		Reactome ID & Tree depth & No. used gene sets & No. removed gene sets \\
 		\hline
-		R-HSA-1474290 & 82 & 0 \\
-		R-HSA-373755 & 48 & 0 \\
-		R-HSA-8982491 & 40 & 0 \\
-		R-HSA-422475 & 335 & 1 \\
+		R-HSA-1474290 & 4 & 82 & 0 \\
+		R-HSA-373755 & 4 & 48 & 0 \\
+		R-HSA-8982491 & 5 & 40 & 0 \\
+		R-HSA-422475 & 3 & 335 & 1 \\
 	\end{tabular}
 	\caption{Reactome pathways used as reference trees.}
 	\label{fig:reactome_trees}
@@ -649,7 +651,7 @@ This is in our opinion reasonable, because pathways in Reactome are always a sup
 Third, we removed 4 of 40 cell types that are cancer cells, because we are unsure if cancer cell provide stable marker genes. This filtering step leaves us with 36 out of 45 immune cell types. \todo{We may want to run experiments on these cells as well}
 Fourth, we used BioMart to translate gene symbols into \acrshort{ncbi} gene identifiers. In addition, we used BioMart and the other annotation services mentioned in \cref{sec:gs_def} to obtain data points. An illustration of the immune cell reference tree is in \cref{fig:immune_cell_tree}.
 
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\resizebox{\textwidth}{!}{% <------ Don't forget this %
 		\begin{tikzpicture}[sibling distance=0pt]
 		\tikzset{grow'=right,level distance=80pt}
@@ -713,7 +715,7 @@ Moreover, we will use the following nomenclature to distinguish presented metric
 \end{align}
 \Cref{fig:metrics} shows a list of all metrics used in this work.
 
-\begin{table}[!h]
+\begin{table}[!ht]
 	\centering
 	\begin{tabularx}{\linewidth}{l|X}
 		\hline
@@ -973,7 +975,7 @@ For instance, we use the composition $\wToVSum \circ P_{S}$ to denote the transf
 Existing mathematical distance functions over $\mathbb{R}^d$, like the cosine distance $D_C$, are suitable for building gene set metrics. Alternatively, we can use functions like the \acrfull{wmd}~ \cite{Kusner:2015:WED:3045118.3045221}, which are more suited for document-based queries. 
 In the context of \acrshort{wmd}, we use the term ``document'' as synonym for (multi)sets of words. 
 The \acrshort{wmd} distance takes two documents and calculates the document distances based on the optimal pairwise pairing of vocables (see \cref{fig:wmd}).
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics{figures/materials/wmd.pdf}
 	\caption{Illustration of WMD distance of two documents~\cite{Kusner:2015:WED:3045118.3045221}}
 	\label{fig:wmd}
@@ -989,61 +991,103 @@ We implemented the word-embedding-based gene set metrics by using the Python pac
 \label{ch:results}
 %% ==============================
 
-We evaluate all presented gene set metrics by assessing the correlation of pairwise distance values with pairwise path lengths per gene set data point.
-
-\todo{What is the most astonishing fact?}
+We evaluate all presented gene set metrics by assessing the correlation of pairwise distance values with pairwise path lengths per gene set data point. We found out that gene set metrics based on the overlap distance yields the best results in 4 out of 5 Reactome and immune cell tree reference datasets. We were able to detect moderate correlation (absolute correlation value $> 0.5$) in all but one reference datasets. All reference dataset show at least week correlation (absolute correlation value $> 0.3$) for at least one gene set metric.
 
 \section{Ground-truth comparison}
 
-For each reference data
-Calculate distance-matrix containing all reference tree path lengts
+We assume that the reference tree path lengths between gene sets represent the ground truth. 
+To compare path lengths with metric results, we calculate distance matrices for each reference dataset $\mathcal{G}$.
+A distance matrix is a symmetric matrix $M \in \mathbb{R}^{n \times n}$ where $n$ is the number of gene set data points in the reference data.
+Each element $M_{ij}$ contains the pairwise distance $d_{p, D}(g_i,g_j)$ where $g_i$, $g_j$ are gene set data points from  $\mathcal{G}$ and $d_{p, D}$ is one of the presented gene set metrics. 
+The symmetry property and the identity-of-indiscernibles property of distance functions allows us to ignore calculations for the lower triangle and the main diagonal of the distance matrix (as seen in \cref{eq:dm})
+\begin{equation} \label{eq:dm}
+   M = \left(
+   \begin{array}{ccccc}
+    \cline{1-1}
+    \multicolumn{1}{c|}{0} &                  M_{12}     &                        M_{13} & \ldots                                  & M_{1n} \\ \cline{2-2}
+                                   &  \multicolumn{1}{c|}{0} &                        M_{13} & \ldots                                  & M_{2n} \\  \cline{3-3}
+                                    &                                  & \multicolumn{1}{c|}{0} & \ddots                                 & \vdots  \\ \cline{4-4}
+                                    &                                   &                                  &  \multicolumn{1}{c|}{\ddots} & M_{n-1,n} \\ \cline{5-5}
+                                    &                                   &                                  &                                             & \multicolumn{1}{c|}{0} \\ 
+  \end{array}\right)
+\end{equation}
 
+\newacronym{pcc}{PCC}{Pearson Correlation Coefficient}
+\newacronym{srcc}{SRCC}{Spearman's Rank Correlation Coefficient}
 
-For each reference data
-For each metric
-Calculate distance-matrix containing gene set metric results
+The evaluation process against the ground-truth consists of 3 major steps.
+First, we calculate the distance matrix of pairwise path lengths between gene sets. 
+We repeat this for all reference datasets. 
+Second, we calculate the distance matrix for a given gene set matrix $d_{p,D}$ over a given reference data set.
+We repeat this step for every distance metric and for every reference dataset.
+Third, we perform correlation coefficient calculations between gene set metrics and the pairwise path lengths.
 
-For each reference data
-Calculate pearson correlation and spearman correlation.
-Pearson tests for linear dependence
-Spearman tests for monotony 
+At the end of the third step, we have two correlation matrices $C^{P}$ and $C^S$ for each reference dataset.
+The matrix entries $C^P_{d_i,d_j}$ stands for the \acrfull{pcc}~\cite{doi:10.1002/9781119454205.ch10} between the distance matrix values calculated by gene set metrics $d_i$, $d_j$ or the reference tree path length. 
+Analogously, the matrix entries $C^S_{d_i,d_j}$ represent the \acrfull{srcc}~\cite{doi:10.1002/9781119454205.ch10} between two gene set metrics $d_i$, $d_j$ or a gene set metric and the reference path lengths. 
+Researcher use the \acrfull{pcc} to measure the linear dependence between two observable variable. 
+The \acrshort{srcc} assesses the monotonic relationship between two variables. Both correlation types have a value range between -1 and 1, where a correlation value near -1 or 1 implies stronger linear or monotonic dependence than a correlation value near 0. 
+To be more precise, we distinguish between 4 correlation levels:
+\begin{itemize}
+	\item No correlation if correlation value is in $(-0.3, 0.3)$
+	\item Weak correlation if correlation value is in $(-0.5,-0.3]$ or $[0.3,0.5)$
+	\item Moderate correlation if correlation value is in $(-0.9,-0.5]$ or $[0.5,0.9)$
+	\item Strong correlation if correlation value is in $[-1.0,-0.9]$ or $[0.9,1.0]$
+\end{itemize}
 
-\begin{centeredFigure}[!h]
-\resizebox{\textwidth}{!}{% <------ Don't forget this %
-	\includegraphics{figures/results/plots/summary/pearson.pdf}% <------ Don't forget this %
-	}
-	\caption{Illustration of WMD distance of two documents}
+\Cref{fig:pearson} illustrates an excerpt of the $C^P$ matrix. 
+It shows only the correlation values between gene set metrics and the pairwise path lengths merged from all reference datasets. 
+
+\begin{centeredFigure}[!ht]
+	\includegraphics[scale=0.85]{figures/results/plots/summary/pearson.pdf}
+	\caption[Pearson correlation between gene set metrics and path lengths]{Pearson correlation between gene set metrics and path lengths. The reason for NaN values in the immune cell dataset is the lack of gene set descriptions from the raw data}
 	\label{fig:pearson}
 \end{centeredFigure}
 
-\begin{centeredFigure}[!h]
-\resizebox{\textwidth}{!}{% <------ Don't forget this %
-	\includegraphics{figures/results/plots/summary/spearman.pdf}% <------ Don't forget this %
-	}
-	\caption{Illustration of WMD distance of two documents}
+The majority of the presented gene set metrics, including a random baseline, show  at best weak correlation.
+This especially applies to metrics that uses Minkowski functions as mathematical distance.
+Other statistical metrics, however, perform better compared to graph-based metrics and metrics that uses word embeddings.
+The overlap distance in particular has the highest correlation values among all reference data sets except the Reactome subtree ``R-HSA-1474290''.
+In dataset ``R-HSA-1474290'', we see that the \acrshort{wmd} distances and cosine distance over gene count vectors show the highest correlations.
+
+The \acrshort{srcc} values in \Cref{fig:spearman} support our finding that statistical metrics outperform more sophisticated gene set metrics based on graphs or word embeddings. Especially gene set metrics that uses the overlap distances function show moderate correlation levels. 
+Furthermore, we see that gene identifiers and phenotype traits are enough to achieve moderate correlation where other external gene set annotations don't improve correlation.
+
+\begin{centeredFigure}[!ht]
+	\includegraphics[scale=0.85]{figures/results/plots/summary/spearman.pdf}
+	\caption[Spearman correlation between gene set metrics and path lengths]{Spearman correlation between gene set metrics and path lengths. The reason for NaN values in the immune cell dataset is the lack of gene set descriptions from the raw data}
 	\label{fig:spearman}
 \end{centeredFigure}
 
-\section{Differences between pathway and marker gene sets}
+We have two possible explanations for the correlation results. 
+First, the gene sets from Reactome pathways are always subsets of the gene sets from parent pathways. 
+This results in a data-induced bias towards set-based gene set metrics - especially towards the overlap distance. 
+This is only partially true for the immune cell reference dataset and the overlap coefficient gives best correlation compared to all other gene set metrics.
 
-Interesting findung: Immune cell are a good negative example, Explanainion for goot performanc eof marker gene: Pathway genes are not activated all the time, where marker genes are activated every time and thouse an intersaction is more appropriate
+Second, we do not consider any uncertainty within the gene sets or the reference trees. 
+Even if community-driven curation process insures correctness of the data, it is only a snapshot of the actual biological knowledge base. 
+Wrong genes in gene sets or incorrect assignments within in \acrshort{ppi} networks or \acrshort{go} trees could impact the gene set metrics.
+This could explain why adding more information (gene descriptions, \acrfull{go} terms) leads to weaker correlation that working only with essential gene set information.
 
 \section{Limitations}
 
-%Shortest path problem:
-%Not Robust (show example)
-%* k-shortest path better, but also not that Robust
-%* Robust shortest path problem is NP-complete and therefore prohibited
+We assume that the biological ground-truth is represented as a rooted tree with gene sets as its nodes. 
+Furthermore, we assume that the best way to compare distance metrics with the ground truth is through measuring the correlation between path lengths and metric distances. 
+The last assumption is questionable when we compare gene sets that are siblings in the reference trees. 
+From a path length perspective, siblings will always have the same distance.
+However, every presented gene set metric will assign varying distance values between different pairings of siblings. 
+This can lead to incorrect \acrshort{pcc} and \acrshort{srcc}. 
+We considered to use distance-based tree-inference algorithm to reconstruct and compare trees from the distance metrics instead.
+However, tree-inference algorithm, as they are well established in phylogenetic applications, can only reconstruct dendrograms where no gene set could appear as inner node.
+In other words, we would need to sample dendrograms from the reference data sets, which makes it in turn harder to asses the actual usefulness of a gene set metric.
 
-
-% Use other W2V Models
-% Use document space based models instead of word space based once
-
-
-% We use shortest path PPI as undirected graph, which si might wring
-% Shortest path is maybe not robust
-
-% We implemented a Python package that provides \todo{MISSING} gene set metric implementations.
+Moreover, we have to mention several technical limitations that comes with the implemented gene set metrics:
+\begin{itemize}
+	\item The shortest path algorithms like Dijkstra don't consider false nodes or edges between nodes.
+	Yu et al. formulate this use-case  as robust shortest path problem, but also prove that this problem is NP-complete~\cite{YU1998457}.
+	\item We are not able to execute gene set metrics on \acrshort{wmd} distance if the projected document contains to many vocables (i.e. around $>1000$ vocables). We had to terminate execution as even the pairwise distance calculations took more than one hour to complete. We think that the high time complexity of $O(p^3 \log(p))$, where $p$ is the number of unique vocables,, is the reason for this performance issue. 
+	The authors of the \acrshort{wmd} algorithm also propose an optimization that leads to a $O(p^2)$~\cite{KIM2017122}, but this optimization is not part of the Gensim Python package we use.
+\end{itemize}
 
 %% ==================
 \chapter{Conclusion}
@@ -1056,9 +1100,31 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 
 %Significant issues identified in the thesis, or still outstanding after the thesis, should be describe as future work.
 
+We started this project with the goal to measure differences between gene sets with a biologically plausible gold standard. 
+This is the first step in simplifying gene set enrichment analysis, as it often report large lists of gene sets with redundant information.
+We introduced a mathematical notation to standardize gene set information and gene set metrics.
+Furthermore, we defined and implemented more than 20 gene set metrics by using basic statistical methods, graph-based models, and word embedding models. 
+We, moreover, used reference data from Reactome and an immune cell type study to evaluate the gene set metrics. 
+We, moreover, downloaded reference data from Reactome and an immune cell type study to evaluate the correlation between metric values and the path lengths in the reference trees. 
+
+Our most important finding is that gene set metrics with more sophisticated models like word embeddings or graphs do not improve the correlation with reference trees.
+On the contrary, we get moderate correlation results with statistical methods based on Jaccard index or overlap coefficient that only operate on gene identifiers or phenotype traits. 
+Uncertainties in gene sets, reference trees, or models could be an explanation for this observation. 
+Adding more information about genes that are wrongly assigned to a gene set could amplify the error in the distance calculation. 
+In contrast, we can achieve moderate correlation if we only use phenotype traits instead of more informative gene identifiers. 
+The findings, however, assume that a reference tree of gene sets is an appropriate representation of biological plausible distances. 
+It is a critical assumption as the manually curated function can contain errors or might does not represent the ground-truth accurately enough.
+
+This leads us to suggest the investigation of in-silico models for gene-centric interactions. 
+With in-silico models we can simulate artificial biological systems that mimic simple phenotype traits.
+We can use such minimalistic systems as more powerful ground-truth where we sample gene sets randomly or by design.
+However, finding a model that approximates biological systems in a computationally feasible way is a difficult question by its own.
+The first step is to work on fundamental biochemical network models, which are the main focus of synthetic biology studies~\cite{doi:10.1093/bioinformatics/btg015}. Besides, every ambition to increase quality and reproducibility of published data is always a step forward, as the GIGO-principle applies also for biology and bioinformatics~\cite{Bininda-Emonds2004}.
 
 
 %We automated these preprocessing steps by using the workflow engine Snakemake~\cite{doi:10.1093/bioinformatics/bts480}. \Cref{fig:reactome_trees} lists all downloaded and preprocessed Reactome subtrees.
+% We implemented a Python package that provides \todo{MISSING} gene set metric implementations.
+% Use document space based models instead of word space based once
 
 %% ----------------
 %% |   Appendix   |
@@ -1075,19 +1141,35 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 
 \section{Additional figures}
 
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 \resizebox{\textwidth}{!}{% <------ Don't forget this %
 	\includegraphics{figures/results/plots/summary/times.pdf}% <------ Don't forget this %
 	}
-	\caption{Execution time per metric and per entire reference data}
+	\caption{Execution time per metric and per entire reference data in seconds}
 	\label{fig:times}
+\end{centeredFigure}
+
+\begin{centeredFigure}[!ht]
+\resizebox{\textwidth}{!}{% <------ Don't forget this %
+	\includegraphics{figures/results/plots/summary/pearsonr_pval.pdf}% <------ Don't forget this %
+	}
+	\caption{P-values of Pearson correlations coefficients in \cref{fig:pearson}}
+	\label{fig:pval_pearson}
+\end{centeredFigure}
+
+\begin{centeredFigure}[!ht]
+\resizebox{\textwidth}{!}{% <------ Don't forget this %
+	\includegraphics{figures/results/plots/summary/spearmanr_pval.pdf}% <------ Don't forget this %
+	}
+	\caption{P-values of Spearman's Rank correlations coefficients in \cref{fig:spearman}}
+	\label{fig:pval_spearman}
 \end{centeredFigure}
 
 \newpage
 
 \global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
 \begin{landscape}
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-373755/pearson.pdf}
 	\caption{Pearson correlation summary over Reactome dataset R-HSA-373755}
 \end{centeredFigure}
@@ -1096,7 +1178,7 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 
 \global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
 \begin{landscape}
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-373755/spearman.pdf}
 	\caption{Spearman correlation summary over Reactome dataset R-HSA-373755}
 \end{centeredFigure}
@@ -1105,7 +1187,7 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 
 \global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
 \begin{landscape}
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-1474290/pearson.pdf}
 	\caption{Pearson correlation summary over Reactome dataset R-HSA-1474290}
 \end{centeredFigure}
@@ -1114,7 +1196,7 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 
 \global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
 \begin{landscape}
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-1474290/spearman.pdf}
 	\caption{Spearman correlation summary over Reactome dataset R-HSA-1474290}
 \end{centeredFigure}
@@ -1123,7 +1205,7 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 
 \global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
 \begin{landscape}
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-8982491/pearson.pdf}
 	\caption{Pearson correlation summary over Reactome dataset R-HSA-8982491}
 \end{centeredFigure}
@@ -1132,7 +1214,7 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 
 \global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
 \begin{landscape}
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-8982491/spearman.pdf}
 	\caption{Spearman correlation summary over Reactome dataset R-HSA-8982491}
 \end{centeredFigure}
@@ -1141,7 +1223,7 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 
 \global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
 \begin{landscape}
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-422475/pearson.pdf}
 	\caption{Pearson correlation summary over Reactome dataset R-HSA-422475}
 \end{centeredFigure}
@@ -1150,7 +1232,7 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 
 \global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
 \begin{landscape}
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics[scale=0.6]{figures/results/plots/full/R-HSA-422475/spearman.pdf}
 	\caption{Spearman correlation summary over Reactome dataset R-HSA-422475}
 \end{centeredFigure}
@@ -1159,7 +1241,7 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 
 \global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
 \begin{landscape}
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics[scale=0.6]{figures/results/plots/full/immune_only/pearson.pdf}
 	\caption{Pearson correlation summary over the immune cell reference tree}
 \end{centeredFigure}
@@ -1168,7 +1250,7 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 
 \global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
 \begin{landscape}
-\begin{centeredFigure}[!h]
+\begin{centeredFigure}[!ht]
 	\includegraphics[scale=0.6]{figures/results/plots/full/immune_only/spearman.pdf}
 	\caption{Spearman correlation summary over the immune cell reference tree}
 \end{centeredFigure}
@@ -1176,13 +1258,14 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 \global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}
 
 \section{ROGER - Roche Omnibus of Gene Expression Regulation} \label{sec:roger}
-%\subsection{State of the art}
-%\subsubsection{Transcriptomic data management}
-%\subsubsection{Differential Gene Expression Analysis}
-%\subsubsection{Gene Set Enrichment Analysis}
-%\subsection{Reimplementation}
-%\subsubsection{Data structures \& architecture}
-%\subsubsection{Visualizations \& data access}
+
+\subsection{State of the art}
+\subsubsection{Transcriptomic data management}
+\subsubsection{Differential Gene Expression Analysis}
+\subsubsection{Gene Set Enrichment Analysis}
+\subsection{Reimplementation}
+\subsubsection{Data structures \& architecture}
+\subsubsection{Visualizations \& data access}
  
 \newpage 
 
@@ -1213,7 +1296,6 @@ Interesting findung: Immune cell are a good negative example, Explanainion for g
 
 \begingroup
 \renewcommand{\chapter}[2]{}%
-%\renewcommand{\chapter}[2]{}% for other classes
 \section{References}
 \bibliography{references}
 \endgroup
