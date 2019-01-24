@@ -835,7 +835,7 @@ The cosine distance~\cite{Vijaymeena} is defined as
 \end{equation}
 where $x \cdot y$ is Euclidean dot product between $x$ and $y$. It is the preferred operator to measure the distance between word embedding vectors.
 
-The $\kappa$ coefficient $\kappa$ measures the agreement between two classifiers~\cite{Artstein:2008:IAC:1479202.1479206}. Its general form is defined as:
+The coefficient $\kappa$ measures the agreement between two classifiers~\cite{Artstein:2008:IAC:1479202.1479206}. Its general form is defined as:
 \begin{align*} \label{eq:kappa}
 	\kappa = \frac{p_0-p_e}{1-p_e}, \quad p_e = \frac{1}{N^2} \sum_{k} n_{k,1} n_{k,2}, \quad \kappa \in [-1, 1]
 \end{align*}
@@ -1149,18 +1149,16 @@ The first step is to work on fundamental biochemical network models, which are t
 	\label{fig:times}
 \end{centeredFigure}
 
+\newpage
+
 \begin{centeredFigure}[!ht]
-\resizebox{\textwidth}{!}{% <------ Don't forget this %
-	\includegraphics{figures/results/plots/summary/pearsonr_pval.pdf}% <------ Don't forget this %
-	}
+	\includegraphics[scale=0.65]{figures/results/plots/summary/pearsonr_pval.pdf}% <------ Don't forget this %
 	\caption{P-values of Pearson correlations coefficients in \cref{fig:pearson}}
 	\label{fig:pval_pearson}
 \end{centeredFigure}
 
 \begin{centeredFigure}[!ht]
-\resizebox{\textwidth}{!}{% <------ Don't forget this %
-	\includegraphics{figures/results/plots/summary/spearmanr_pval.pdf}% <------ Don't forget this %
-	}
+	\includegraphics[scale=0.65]{figures/results/plots/summary/spearmanr_pval.pdf}% <------ Don't forget this %
 	\caption{P-values of Spearman's Rank correlations coefficients in \cref{fig:spearman}}
 	\label{fig:pval_spearman}
 \end{centeredFigure}
@@ -1259,11 +1257,34 @@ The first step is to work on fundamental biochemical network models, which are t
 
 \section{ROGER - Roche Omnibus of Gene Expression Regulation} \label{sec:roger}
 
+\newacronym{roger}{ROGER}{Roche Omnibus of Gene Expression Regulation}
+
+Our goal with the \acrfull{roger} is to solve two predominant issues with (academic) gene expression analysis. 
+The first issues is about the lack of a centralized data storage for gene expression analysis results.
+The second issue is about missing standardization of data processing pipelines and visualization techniques.
+These situation makes it difficult to maintain comparability and reproducibility of published results from gene expression experiments.
+
 \subsection{State of the art}
+
+\newacronym{geo}{GEO}{Gene Expression Omnibus}
+
+Before talking about the architecture of \acrshort{roger}, we need to give a deeper overview over the gene expression analysis. This is necessary to justify the design decisions and data structures needed to store all information related to gene expression experiments. 
+
 \subsubsection{Transcriptomic data management}
+
+We classify transcriptomic data as any kind of data that measures the (relative) concentrations of \acrshort{rna} fragments in living cells. 
+The universal format of such gene expression data is a matrix (as described in \cref{sec:gene_expression})
+
+The public database \acrfull{geo} provides access to gene expression data used in literature. 
+However, it's purpose is to serve as passive archive instead of a data processing and visualization platform~\cite{doi:10.1093/nar/gks1193}.
+
+
+
 \subsubsection{Differential Gene Expression Analysis}
 \subsubsection{Gene Set Enrichment Analysis}
-\subsection{Reimplementation}
+
+
+\subsection{Implementation}
 \subsubsection{Data structures \& architecture}
 \subsubsection{Visualizations \& data access}
  
